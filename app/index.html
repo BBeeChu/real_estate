@@ -53,6 +53,38 @@
       margin-bottom: 12px;
       background: white;
     }
+    .guide {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+    .guide summary {
+      cursor: pointer;
+      padding: 11px 12px;
+      font-weight: 800;
+      color: #0b4fb3;
+      background: var(--accent-soft);
+    }
+    .guide-body {
+      padding: 11px 13px 13px;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .guide-body ol {
+      margin: 0;
+      padding-left: 19px;
+    }
+    .guide-body li + li {
+      margin-top: 6px;
+    }
+    .guide-note {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
     .category {
       margin: 17px 0 8px;
       color: var(--muted);
@@ -133,13 +165,26 @@
   <header>
     <div>
       <h1>부동산 HTML 독립 실행 앱</h1>
-      <div class="subtle">원본 HTML을 각각 독립 iframe으로 실행합니다. 가운데에서 문구를 추가하고 오른쪽에서 복사, 인쇄, 파일 저장을 할 수 있습니다.</div>
+      <div class="subtle">원하는 섹션에서 특약을 선택한 뒤 가계약서에서 자동으로 합산된 문구를 확인하고 다운로드할 수 있습니다.</div>
     </div>
     <div class="subtle">GitHub Pages 배포용 정적 앱</div>
   </header>
   <div class="layout">
     <nav>
       <input id="search" class="search" placeholder="HTML 이름 검색">
+      <details class="guide" open>
+        <summary>간단 사용 설명서</summary>
+        <div class="guide-body">
+          <ol>
+            <li>왼쪽 메뉴에서 필요한 특약 섹션을 엽니다.</li>
+            <li>원하는 특약사항을 클릭하거나 체크합니다.</li>
+            <li>마지막에 <strong>가계약서</strong> 섹션으로 이동합니다.</li>
+            <li>가계약 정보를 입력하면 선택한 특약이 자동으로 특약사항에 추가됩니다.</li>
+            <li>가계약서의 <strong>복사</strong>, <strong>인쇄</strong>, <strong>다운로드</strong> 버튼으로 저장합니다.</li>
+          </ol>
+          <div class="guide-note">선택 내용은 같은 브라우저 안에서 자동 연동됩니다.</div>
+        </div>
+      </details>
       <div id="menu"></div>
     </nav>
     <main>
