@@ -13,6 +13,7 @@ BASE = Path(__file__).resolve().parent
 DATA_DIR = BASE / "data"
 APP_DIR = BASE / "app"
 PAGES_DIR = APP_DIR / "pages"
+ROOT_PAGES_DIR = BASE / "pages"
 
 
 class TitleParser(HTMLParser):
@@ -102,10 +103,11 @@ def custom_clause_panel(page_id: str) -> str:
 <style>
   #re-custom-panel {{
     position: fixed;
-    right: 16px;
+    left: 50%;
     bottom: 16px;
+    transform: translateX(-50%);
     z-index: 2147483647;
-    width: min(420px, calc(100vw - 32px));
+    width: min(520px, calc(100vw - 32px));
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     color: #111827;
   }}
@@ -156,6 +158,32 @@ def custom_clause_panel(page_id: str) -> str:
     gap: 8px;
     flex-wrap: wrap;
   }}
+  #re-action-dock {{
+    position: fixed;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2147483647;
+    width: 132px;
+    display: grid;
+    gap: 8px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }}
+  #re-action-dock button {{
+    border: 1px solid #cfd8e3;
+    background: #ffffff;
+    color: #111827;
+    border-radius: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    font-weight: 800;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, .14);
+  }}
+  #re-action-dock button.primary {{
+    background: #1f6feb;
+    border-color: #1f6feb;
+    color: white;
+  }}
   #re-custom-panel .list {{
     max-height: 180px;
     overflow: auto;
@@ -181,7 +209,24 @@ def custom_clause_panel(page_id: str) -> str:
     flex: 0 0 auto;
   }}
   @media print {{
-    #re-custom-panel {{ display: none; }}
+    #re-custom-panel,
+    #re-action-dock {{ display: none; }}
+  }}
+  @media (max-width: 760px) {{
+    #re-custom-panel {{
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      transform: none;
+      width: auto;
+    }}
+    #re-action-dock {{
+      right: 12px;
+      top: 12px;
+      transform: none;
+      width: auto;
+      grid-template-columns: repeat(3, auto);
+    }}
   }}
 </style>
 <div id="re-custom-panel">
@@ -191,12 +236,16 @@ def custom_clause_panel(page_id: str) -> str:
       <textarea id="re-custom-input" placeholder="이 HTML에만 저장할 문구를 입력하세요."></textarea>
       <div class="actions">
         <button class="primary" id="re-custom-add" type="button">추가</button>
-        <button id="re-custom-copy" type="button">내 문구 복사</button>
         <button id="re-custom-clear" type="button">전체 삭제</button>
       </div>
       <div class="list" id="re-custom-list"></div>
     </div>
   </details>
+</div>
+<div id="re-action-dock" aria-label="문서 작업">
+  <button class="primary" id="re-copy-doc" type="button">복사</button>
+  <button id="re-print-doc" type="button">인쇄</button>
+  <button id="re-save-doc" type="button">파일 저장</button>
 </div>
 <script>
 (function () {{
@@ -205,8 +254,10 @@ def custom_clause_panel(page_id: str) -> str:
   const input = document.getElementById("re-custom-input");
   const list = document.getElementById("re-custom-list");
   const add = document.getElementById("re-custom-add");
-  const copy = document.getElementById("re-custom-copy");
   const clear = document.getElementById("re-custom-clear");
+  const copyDoc = document.getElementById("re-copy-doc");
+  const printDoc = document.getElementById("re-print-doc");
+  const saveDoc = document.getElementById("re-save-doc");
 
   function read() {{
     try {{
@@ -264,8 +315,47 @@ def custom_clause_panel(page_id: str) -> str:
     render();
   }});
 
-  copy.addEventListener("click", async () => {{
-    const text = read().map((value, index) => `${{index + 1}}. ${{value}}`).join("\\n");
+  function selectedOptionText() {{
+    const values = [];
+    document.querySelectorAll("input[type=checkbox]:checked").forEach((input) => {{
+      const label = input.closest("label");
+      values.push(input.value || (label ? label.innerText : ""));
+    }});
+    document.querySelectorAll(".selected, .active").forEach((node) => {{
+      if (node.closest("#re-custom-panel") || node.closest("#re-action-dock")) return;
+      values.push(node.innerText || node.textContent || "");
+    }});
+    return values.map(value => value.trim()).filter(Boolean);
+  }}
+
+  function primaryResultText() {{
+    const selectors = ["textarea#result", "#result", "#out", ".result", ".right"];
+    for (const selector of selectors) {{
+      const node = document.querySelector(selector);
+      if (!node || node.closest("#re-custom-panel") || node.closest("#re-action-dock")) continue;
+      const text = "value" in node ? node.value : node.innerText;
+      if (text && text.trim()) return text.trim();
+    }}
+    return "";
+  }}
+
+  function exportText() {{
+    const sections = [];
+    const resultText = primaryResultText();
+    if (resultText) sections.push(resultText);
+    const selected = selectedOptionText();
+    if (!resultText && selected.length) {{
+      sections.push(selected.map((value, index) => `${{index + 1}}. ${{value}}`).join("\\n"));
+    }}
+    const custom = read();
+    if (custom.length) {{
+      sections.push("[내 문구]\\n" + custom.map((value, index) => `${{index + 1}}. ${{value}}`).join("\\n"));
+    }}
+    return sections.join("\\n\\n").trim();
+  }}
+
+  copyDoc.addEventListener("click", async () => {{
+    const text = exportText();
     if (!text) {{
       alert("복사할 문구가 없습니다.");
       return;
@@ -280,7 +370,27 @@ def custom_clause_panel(page_id: str) -> str:
       document.execCommand("copy");
       temp.remove();
     }}
-    alert("내 문구 복사 완료");
+    alert("복사 완료");
+  }});
+
+  printDoc.addEventListener("click", () => {{
+    window.print();
+  }});
+
+  saveDoc.addEventListener("click", () => {{
+    const text = exportText();
+    if (!text) {{
+      alert("저장할 문구가 없습니다.");
+      return;
+    }}
+    const blob = new Blob([text], {{ type: "text/plain;charset=utf-8" }});
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = pageId + "-문구.txt";
+    document.body.appendChild(link);
+    link.click();
+    URL.revokeObjectURL(link.href);
+    link.remove();
   }});
 
   clear.addEventListener("click", () => {{
@@ -326,6 +436,14 @@ def build_pages() -> list[dict[str, str]]:
             }
         )
     return tools
+
+
+def sync_root_pages() -> None:
+    if ROOT_PAGES_DIR.exists():
+        shutil.rmtree(ROOT_PAGES_DIR)
+    shutil.copytree(PAGES_DIR, ROOT_PAGES_DIR)
+    shutil.copy2(APP_DIR / "index.html", BASE / "index.html")
+    shutil.copy2(APP_DIR / ".nojekyll", BASE / ".nojekyll")
 
 
 def app_html(tools: list[dict[str, str]]) -> str:
@@ -471,7 +589,7 @@ def app_html(tools: list[dict[str, str]]) -> str:
   <header>
     <div>
       <h1>부동산 HTML 독립 실행 앱</h1>
-      <div class="subtle">원본 HTML을 각각 독립 iframe으로 실행합니다. 각 페이지 하단에서 내 문구를 따로 추가할 수 있습니다.</div>
+      <div class="subtle">원본 HTML을 각각 독립 iframe으로 실행합니다. 가운데에서 문구를 추가하고 오른쪽에서 복사, 인쇄, 파일 저장을 할 수 있습니다.</div>
     </div>
     <div class="subtle">GitHub Pages 배포용 정적 앱</div>
   </header>
@@ -622,6 +740,7 @@ def main() -> None:
     (APP_DIR / "index.html").write_text(app_html(tools), encoding="utf-8")
     (APP_DIR / "README.md").write_text(readme(), encoding="utf-8")
     (APP_DIR / ".nojekyll").write_text("", encoding="utf-8")
+    sync_root_pages()
     print(json.dumps({"pages": len(tools), "output": str(APP_DIR)}, ensure_ascii=False))
 
 
