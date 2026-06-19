@@ -1,0 +1,221 @@
+<div style="font-family:Arial; line-height:1.7; max-width:700px; font-size:17px; font-weight:500;">
+
+  <!-- 동의 문장 -->
+  <div style="text-align:center; font-size:18px; font-weight:700; margin-bottom:15px; user-select:text;">
+    상기 특약사항을 충분히 확인하고 상호 동의하여 계약합니다.
+  </div>
+
+  <!-- 날짜 -->
+  <div style="text-align:center; margin-bottom:25px;">
+    <input type="text" placeholder="2026-05-27"
+      style="padding:8px; font-size:16px; width:160px; font-weight:600; text-align:center;">
+  </div>
+
+  <!-- 서명 (한줄 + 밑줄 없음) -->
+  <div style="display:flex; justify-content:space-between; gap:60px; margin-top:10px; font-weight:600;">
+
+    <div style="flex:1; text-align:center;">
+      매도인 &nbsp; ____________________
+    </div>
+
+    <div style="flex:1; text-align:center;">
+      매수인 &nbsp; ____________________
+    </div>
+
+  </div>
+
+</div>
+
+<style>
+  #re-custom-panel {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 2147483647;
+    width: min(420px, calc(100vw - 32px));
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: #111827;
+  }
+  #re-custom-panel details {
+    border: 1px solid #cfd8e3;
+    border-radius: 10px;
+    background: #ffffff;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, .18);
+    overflow: hidden;
+  }
+  #re-custom-panel summary {
+    cursor: pointer;
+    padding: 12px 14px;
+    font-weight: 800;
+    background: #1f6feb;
+    color: white;
+    user-select: none;
+  }
+  #re-custom-panel .body {
+    padding: 12px;
+    display: grid;
+    gap: 8px;
+  }
+  #re-custom-panel textarea {
+    width: 100%;
+    min-height: 78px;
+    resize: vertical;
+    border: 1px solid #cfd8e3;
+    border-radius: 8px;
+    padding: 9px;
+    font: inherit;
+  }
+  #re-custom-panel button {
+    border: 1px solid #cfd8e3;
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 8px 10px;
+    cursor: pointer;
+    font-weight: 700;
+  }
+  #re-custom-panel button.primary {
+    background: #1f6feb;
+    border-color: #1f6feb;
+    color: white;
+  }
+  #re-custom-panel .actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  #re-custom-panel .list {
+    max-height: 180px;
+    overflow: auto;
+    display: grid;
+    gap: 6px;
+  }
+  #re-custom-panel .item {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 8px;
+    background: #f9fafb;
+    line-height: 1.45;
+  }
+  #re-custom-panel .item-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  #re-custom-panel .delete {
+    color: #b42318;
+    padding: 4px 7px;
+    flex: 0 0 auto;
+  }
+  @media print {
+    #re-custom-panel { display: none; }
+  }
+</style>
+<div id="re-custom-panel">
+  <details>
+    <summary>내 문구 추가</summary>
+    <div class="body">
+      <textarea id="re-custom-input" placeholder="이 HTML에만 저장할 문구를 입력하세요."></textarea>
+      <div class="actions">
+        <button class="primary" id="re-custom-add" type="button">추가</button>
+        <button id="re-custom-copy" type="button">내 문구 복사</button>
+        <button id="re-custom-clear" type="button">전체 삭제</button>
+      </div>
+      <div class="list" id="re-custom-list"></div>
+    </div>
+  </details>
+</div>
+<script>
+(function () {
+  const pageId = "02-동의서명";
+  const key = "realEstateCustomClauses:" + pageId;
+  const input = document.getElementById("re-custom-input");
+  const list = document.getElementById("re-custom-list");
+  const add = document.getElementById("re-custom-add");
+  const copy = document.getElementById("re-custom-copy");
+  const clear = document.getElementById("re-custom-clear");
+
+  function read() {
+    try {
+      const value = JSON.parse(localStorage.getItem(key) || "[]");
+      return Array.isArray(value) ? value : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function write(values) {
+    localStorage.setItem(key, JSON.stringify(values));
+  }
+
+  function render() {
+    const values = read();
+    list.innerHTML = "";
+    if (!values.length) {
+      list.innerHTML = '<div style="color:#6b7280;font-size:13px;">아직 추가한 문구가 없습니다.</div>';
+      return;
+    }
+    values.forEach((value, index) => {
+      const row = document.createElement("div");
+      row.className = "item";
+      row.innerHTML = '<div class="item-row"><div>' + (index + 1) + '. ' + escapeHtml(value) + '</div><button class="delete" type="button">삭제</button></div>';
+      row.querySelector("button").addEventListener("click", () => {
+        const next = read().filter((_, itemIndex) => itemIndex !== index);
+        write(next);
+        render();
+      });
+      list.appendChild(row);
+    });
+  }
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    }[char]));
+  }
+
+  add.addEventListener("click", () => {
+    const value = input.value.trim();
+    if (!value) {
+      alert("추가할 문구를 입력하세요.");
+      return;
+    }
+    const values = read();
+    values.push(value);
+    write(values);
+    input.value = "";
+    render();
+  });
+
+  copy.addEventListener("click", async () => {
+    const text = read().map((value, index) => `${index + 1}. ${value}`).join("\n");
+    if (!text) {
+      alert("복사할 문구가 없습니다.");
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (error) {
+      const temp = document.createElement("textarea");
+      temp.value = text;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand("copy");
+      temp.remove();
+    }
+    alert("내 문구 복사 완료");
+  });
+
+  clear.addEventListener("click", () => {
+    if (!confirm("이 HTML에 추가한 문구를 모두 삭제할까요?")) return;
+    write([]);
+    render();
+  });
+
+  render();
+}());
+</script>

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>보성월세1</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:'Malgun Gothic',sans-serif;
+    background:#111;
+    color:#fff;
+    height:100vh;
+    overflow:hidden;
+}
+
+.container{
+    display:flex;
+    height:100vh;
+}
+
+.left{
+    width:50%;
+    overflow-y:auto;
+    padding:20px;
+    border-right:2px solid #333;
+    background:#181818;
+}
+
+.right{
+    width:50%;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    background:#000;
+}
+
+h1{
+    margin-top:0;
+    text-align:center;
+    font-size:40px;
+    color:#00d8ff;
+}
+
+.section-title{
+    margin-top:25px;
+    margin-bottom:10px;
+    font-size:22px;
+    color:#ffd54f;
+    border-left:6px solid #ffd54f;
+    padding-left:10px;
+}
+
+.option{
+    background:#222;
+    border:2px solid #444;
+    border-radius:10px;
+    padding:14px;
+    margin-bottom:10px;
+    cursor:pointer;
+    transition:0.2s;
+    line-height:1.6;
+    font-size:23px;
+}
+
+.option:hover{
+    border-color:#00d8ff;
+}
+
+.option.selected{
+    background:#005577;
+    border-color:#00d8ff;
+    color:#fff;
+}
+
+.result-title{
+    font-size:28px;
+    margin-bottom:15px;
+    color:#00ff99;
+    text-align:center;
+}
+
+#result{
+    flex:1;
+    background:#111;
+    margin-bottom:10px:
+    border:2px solid #444;
+    border-radius:10px;
+    padding:10px;
+    overflow-y:auto;
+    white-space:pre-wrap;
+    line-height:1.25;
+    font-size:23px;
+}
+
+.copy-btn{
+    margin-top:15px;
+    padding:15px;
+    font-size:20px;
+    border:none;
+    border-radius:10px;
+    background:#00d8ff;
+    color:#000;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.copy-btn:hover{
+    background:#00aacc;
+}
+
+::-webkit-scrollbar{
+    width:10px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#555;
+    border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="left">
+
+        <h1>보성월세1</h1>
+
+        <div class="section-title">월세 계약 특약사항</div>
+      
+        <div class="option" onclick="toggleOption(this)">
+매수인은 현 시설 상태를 직접 확인하고, 공인중개사와 함께 현장 확인 후, 현 상태대로 계약하는 것에 동의한다.
+        </div>
+     
+        <div class="option" onclick="toggleOption(this)">
+임대인은 계약 체결일 현재 등기사항전부증명서상 권리관계를 임차인의 전입신고 및 확정일자 완료일까지 동일하게 유지한다.
+        </div>
+      
+      <div class="option" onclick="toggleOption(this)">
+임대인은 임차인의 사전 동의 없이 추가 근저당권 설정, 가압류, 압류, 소유권 이전 기타 임차권 보호에 지장을 주는 권리관계를 새로 설정하지 않기로 한다.     </div>
+
+        <div class="option" onclick="toggleOption(this)">
+임차인의 사정으로 중도 퇴실 시 신규 임차인 계약 체결 전까지의 월세는 임차인이 부담한다.
+        </div>
+
+        <div class="option" onclick="toggleOption(this)">
+임차인의 사정으로 중도 퇴실로 신규 임차인과 계약이 체결될 경우 발생하는 중개수수료는 임차인이 부담한다.
+      </div>
+
+              <div class="option" onclick="toggleOption(this)">
+임차인의 고의 또는 과실로 발생한 손해 및 하자에 대한 수리·교체 비용은 임차인이 부담한다.
+      </div>
+      
+        <div class="option" onclick="toggleOption(this)">
+임대인은 임대차 기간 중 임대 목적물이 매매되더라도 기존 임대차계약의 조건, 보증금, 차임 및 임대차 기간은 매수인에게 동일한 조건으로 승계되며, 임차인의 권리가 계속 유지되게 하여야 한다.
+        </div>
+
+        <div class="option" onclick="toggleOption(this)">
+계약 종료 시 임대인은 임차인의 명도와 동시에 보증금을 즉시 반환한다.
+        </div>
+
+        <div class="option" onclick="toggleOption(this)">
+전구 및 관련 부속품, 수도 관련 부속품, 화장실 내 부속품, 주방 관련 부속품, 문손잡이 등 사용 중 발생하는 경미한 품목의 수선·교체 비용은 임차인이 부담한다.
+        </div>
+      
+        <div class="option" onclick="toggleOption(this)">
+옵션 품목(에어컨, 냉장고, 세탁기, 가스레인지, 인덕션, 전자도어락, 전등교체와 전기배선 ),보일러,수도관, 전기는 계약 체결 당시 정상 작동 상태로 인도하며, 자연적인 고장 발생 시 임대인이 수리 또는 교체한다.
+        </div>
+
+        <div class="option" onclick="toggleOption(this)">
+임대인은 임차인 입주 전까지 관리비, 공과금, 수도요금, 전기요금, 가스요금 등의 체납 사실이 없도록 한다.
+        </div>
+
+        <div class="option" onclick="toggleOption(this)">
+장기수선충당금은 임차인이 매월 선납하되, 임대차 종료 시 관리사무소 등의 정산 내역에 따라 정산하여 임대인이 임차인에게 보증금 반환 시 함께 반환한다.
+        </div>
+
+        <div class="option" onclick="toggleOption(this)">
+계약 체결 이후 임대인의 귀책사유로 본 계약이 이행되지 아니하는 경우, 임대인은 임차인에게 계약금의 배액을 배상한다.
+임차인의 귀책사유로 본 계약이 이행되지 아니하는 경우, 임차인은 계약금을 포기한 것으로 본다.
+        </div>
+
+        <div class="option" onclick="toggleOption(this)">
+임차인은 계약 종료 시 통상적인 사용으로 인한 마모를 제외하고 원상복구 후 명도한다.
+        </div>
+
+        <div class="option" onclick="toggleOption(this)">
+계약 종료 의사는 만기 2개월 전까지 상호 통보하기로 한다.
+        </div>
+
+        <div class="option" onclick="toggleOption(this)">
+임대인은 선순위 보증금, 근저당권 및 기타 채무 현황을 사실대로 고지하였으며, 허위 사실 확인 시 임차인은 계약을 해제할 수 있다.
+        </div>
+
+        <div class="option" onclick="toggleOption(this)">
+임차인의 고의·과실로 발생한 시설물 파손은 임차인 부담으로 한다.
+        </div>
+
+        <div class="option" onclick="toggleOption(this)">
+임대차 기간 중 경매, 공매, 압류 등 권리침해 사유 발생 시 임대인은 임차인의 보증금 반환에 적극 협조한다.
+        </div>
+
+        <div class="option" onclick="toggleOption(this)">
+임대인은 국세 및 지방세 체납으로 인하여 임차인에게 손해가 발생하지 않도록 한다.
+        </div>
+
+        <div class="section-title">선택 특약</div>
+
+        <div class="option" onclick="toggleOption(this)">
+임차인의 반려동물 사육은 사전 협의된 경우에 한하며, 소음·훼손 발생 시 임차인이 책임진다.
+        </div>
+
+        <div class="option" onclick="toggleOption(this)">
+실내 흡연으로 인한 도배, 장판, 냄새 제거 비용은 임차인이 부담한다.
+        </div>
+
+        <div class="option" onclick="toggleOption(this)">
+임대인은 입주 전 전문 청소를 완료한 상태로 임차인에게 인도한다.
+        </div>
+
+        <div class="option" onclick="toggleOption(this)">
+임차인의 사정으로 계약기간 내 퇴거할 경우, 새로운 임차인 계약 체결 시까지 발생하는 월세와 중개수수료는 임차인이 부담하기로 한다.
+        </div>
+        
+        <div class="option" onclick="toggleOption(this)">
+임차인은 이사 후 14일 이내 관할 행정복지센터에 주소이전을 신고해야 합니다. 가급적 빠르게 전·월세 계약서에 확정일자도 받으시기 바랍니다.     
+       </div>
+       
+       <div class="option" onclick="toggleOption(this)">
+양 당사자는 계약 체결일로 부터 30일 이내에 행정복지센터 방문 또는국토부거래관리시스템을 통하여 주택임대차 계약을 신고해야 합니다.(보증금 6천만 원 또는 월 임대료 30만 원을 초과하는 주택 임대차 계약)
+        </div>
+      
+              <div class="option" onclick="toggleOption(this)">
+본 특약사항에 기재되지 않은 내용은 주택임대차보호법 및 민법에 따른다.
+        </div>
+
+        <div class="option" onclick="toggleOption(this)">
+첨부서류 : 중개대상물확인·설명서, 공제증서 사본 각 1부.
+        </div>
+
+        <div class="option" onclick="toggleOption(this)">
+영남에너지 (054-285-0852),한전(054-123)에 연락하여 명의등록 후 사용하여야 합니다.
+        </div>
+
+        <div class="option" onclick="toggleOption(this)">
+임대인의 계좌번호는 0000000 입니다.
+        </div>
+
+
+    </div>
+
+    <div class="right">
+
+        <div class="result-title">선택된 특약사항</div>
+
+        <div id="result"></div>
+
+        <button class="copy-btn" onclick="copyText()">복사하기</button>
+
+    </div>
+
+</div>
+
+<script>
+
+function toggleOption(element){
+
+    element.classList.toggle("selected");
+
+    updateResult();
+}
+
+function updateResult(){
+
+    const selected = document.querySelectorAll(".option.selected");
+
+    let text = "";
+
+    selected.forEach((item,index)=>{
+
+        text += (index+1) + ". " + item.innerText.trim() + "\n\n";
+    });
+
+    document.getElementById("result").innerText = text;
+}
+
+function copyText(){
+
+    const text = document.getElementById("result").innerText;
+
+    navigator.clipboard.writeText(text);
+
+    alert("복사되었습니다.");
+}
+
+</script>
+
+
+<style>
+  #re-custom-panel {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 2147483647;
+    width: min(420px, calc(100vw - 32px));
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: #111827;
+  }
+  #re-custom-panel details {
+    border: 1px solid #cfd8e3;
+    border-radius: 10px;
+    background: #ffffff;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, .18);
+    overflow: hidden;
+  }
+  #re-custom-panel summary {
+    cursor: pointer;
+    padding: 12px 14px;
+    font-weight: 800;
+    background: #1f6feb;
+    color: white;
+    user-select: none;
+  }
+  #re-custom-panel .body {
+    padding: 12px;
+    display: grid;
+    gap: 8px;
+  }
+  #re-custom-panel textarea {
+    width: 100%;
+    min-height: 78px;
+    resize: vertical;
+    border: 1px solid #cfd8e3;
+    border-radius: 8px;
+    padding: 9px;
+    font: inherit;
+  }
+  #re-custom-panel button {
+    border: 1px solid #cfd8e3;
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 8px 10px;
+    cursor: pointer;
+    font-weight: 700;
+  }
+  #re-custom-panel button.primary {
+    background: #1f6feb;
+    border-color: #1f6feb;
+    color: white;
+  }
+  #re-custom-panel .actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  #re-custom-panel .list {
+    max-height: 180px;
+    overflow: auto;
+    display: grid;
+    gap: 6px;
+  }
+  #re-custom-panel .item {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 8px;
+    background: #f9fafb;
+    line-height: 1.45;
+  }
+  #re-custom-panel .item-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  #re-custom-panel .delete {
+    color: #b42318;
+    padding: 4px 7px;
+    flex: 0 0 auto;
+  }
+  @media print {
+    #re-custom-panel { display: none; }
+  }
+</style>
+<div id="re-custom-panel">
+  <details>
+    <summary>내 문구 추가</summary>
+    <div class="body">
+      <textarea id="re-custom-input" placeholder="이 HTML에만 저장할 문구를 입력하세요."></textarea>
+      <div class="actions">
+        <button class="primary" id="re-custom-add" type="button">추가</button>
+        <button id="re-custom-copy" type="button">내 문구 복사</button>
+        <button id="re-custom-clear" type="button">전체 삭제</button>
+      </div>
+      <div class="list" id="re-custom-list"></div>
+    </div>
+  </details>
+</div>
+<script>
+(function () {
+  const pageId = "06-월세1";
+  const key = "realEstateCustomClauses:" + pageId;
+  const input = document.getElementById("re-custom-input");
+  const list = document.getElementById("re-custom-list");
+  const add = document.getElementById("re-custom-add");
+  const copy = document.getElementById("re-custom-copy");
+  const clear = document.getElementById("re-custom-clear");
+
+  function read() {
+    try {
+      const value = JSON.parse(localStorage.getItem(key) || "[]");
+      return Array.isArray(value) ? value : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function write(values) {
+    localStorage.setItem(key, JSON.stringify(values));
+  }
+
+  function render() {
+    const values = read();
+    list.innerHTML = "";
+    if (!values.length) {
+      list.innerHTML = '<div style="color:#6b7280;font-size:13px;">아직 추가한 문구가 없습니다.</div>';
+      return;
+    }
+    values.forEach((value, index) => {
+      const row = document.createElement("div");
+      row.className = "item";
+      row.innerHTML = '<div class="item-row"><div>' + (index + 1) + '. ' + escapeHtml(value) + '</div><button class="delete" type="button">삭제</button></div>';
+      row.querySelector("button").addEventListener("click", () => {
+        const next = read().filter((_, itemIndex) => itemIndex !== index);
+        write(next);
+        render();
+      });
+      list.appendChild(row);
+    });
+  }
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    }[char]));
+  }
+
+  add.addEventListener("click", () => {
+    const value = input.value.trim();
+    if (!value) {
+      alert("추가할 문구를 입력하세요.");
+      return;
+    }
+    const values = read();
+    values.push(value);
+    write(values);
+    input.value = "";
+    render();
+  });
+
+  copy.addEventListener("click", async () => {
+    const text = read().map((value, index) => `${index + 1}. ${value}`).join("\n");
+    if (!text) {
+      alert("복사할 문구가 없습니다.");
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (error) {
+      const temp = document.createElement("textarea");
+      temp.value = text;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand("copy");
+      temp.remove();
+    }
+    alert("내 문구 복사 완료");
+  });
+
+  clear.addEventListener("click", () => {
+    if (!confirm("이 HTML에 추가한 문구를 모두 삭제할까요?")) return;
+    write([]);
+    render();
+  });
+
+  render();
+}());
+</script>
+
+</body>
+</html>
