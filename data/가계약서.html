@@ -1,0 +1,802 @@
+```html
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📋 보성부동산 가계약서 선택형 앱 PRO</title>
+
+<style>
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:'Malgun Gothic',sans-serif;
+  background:linear-gradient(135deg,#eef3f8,#d9e5f2);
+  color:#222;
+}
+
+header{
+  background:linear-gradient(90deg,#0f4c81,#2c74b3);
+  color:white;
+  padding:30px;
+  text-align:center;
+  font-size:40px;
+  font-weight:900;
+  letter-spacing:-1px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.2);
+}
+
+.container{
+  max-width:1250px;
+  margin:auto;
+  padding:22px;
+}
+
+.card{
+  background:white;
+  border-radius:24px;
+  padding:24px;
+  margin-bottom:22px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.08);
+}
+
+h2{
+  margin-top:0;
+  margin-bottom:20px;
+  color:#0f4c81;
+  font-size:31px;
+  font-weight:900;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:14px;
+}
+
+button.option{
+  border:none;
+  border-radius:16px;
+  padding:18px;
+  font-size:18px;
+  font-weight:900;
+  cursor:pointer;
+  transition:0.2s;
+  background:#edf3fa;
+  color:#0f4c81;
+  box-shadow:0 2px 10px rgba(0,0,0,0.06);
+}
+
+button.option:hover{
+  transform:translateY(-2px);
+  background:#d7e8fb;
+}
+
+button.active{
+  background:linear-gradient(135deg,#0f4c81,#2c74b3);
+  color:white;
+}
+
+.label{
+  font-size:20px;
+  font-weight:900;
+  margin-top:15px;
+  margin-bottom:8px;
+}
+
+.input-wrap{
+  position:relative;
+}
+
+input{
+  width:100%;
+  padding:17px;
+  padding-right:55px;
+  border-radius:14px;
+  border:2px solid #d5dde8;
+  font-size:18px;
+  font-weight:800;
+  background:#f8fbff;
+}
+
+input:focus{
+  outline:none;
+  border-color:#2c74b3;
+  box-shadow:0 0 0 4px rgba(44,116,179,0.15);
+}
+
+.clear-btn{
+  position:absolute;
+  right:10px;
+  top:50%;
+  transform:translateY(-50%);
+  width:36px;
+  height:36px;
+  border:none;
+  border-radius:50%;
+  background:#dce8f5;
+  color:#0f4c81;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.clear-btn:hover{
+  background:#0f4c81;
+  color:white;
+}
+
+.hidden{
+  display:none;
+}
+
+textarea{
+  width:100%;
+  min-height:470px;
+  border:3px solid #2c74b3;
+  border-radius:22px;
+  padding:24px;
+  font-size:19px;
+  font-weight:900;
+  background:#ffffff;
+  resize:none;
+  line-height:1.9;
+  color:#111;
+  letter-spacing:-0.3px;
+
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+
+  box-shadow:
+    inset 0 0 0 2px #d6e7fa,
+    0 6px 20px rgba(0,0,0,0.08);
+
+  overflow:auto;
+
+  background-image:
+    linear-gradient(
+      to bottom,
+      transparent 39px,
+      #e7eef7 40px
+    );
+
+  background-size:100% 40px;
+}
+
+.btn-group{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:14px;
+  margin-top:16px;
+}
+
+.copy-btn{
+  border:none;
+  padding:19px;
+  font-size:21px;
+  font-weight:900;
+  border-radius:18px;
+  background:linear-gradient(90deg,#0f4c81,#2c74b3);
+  color:white;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.copy-btn:hover{
+  opacity:0.94;
+  transform:translateY(-2px);
+}
+
+.footer{
+  text-align:center;
+  padding:30px;
+  font-size:17px;
+  color:#555;
+  font-weight:bold;
+}
+
+@media(max-width:700px){
+
+header{
+  font-size:27px;
+}
+
+button.option{
+  font-size:16px;
+  padding:15px;
+}
+
+textarea{
+  min-height:380px;
+  font-size:17px;
+  padding:18px;
+}
+
+.btn-group{
+  grid-template-columns:1fr;
+}
+
+.copy-btn{
+  padding:20px;
+  font-size:20px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+📋 보성부동산 가계약 
+</header>
+
+<div class="container">
+
+<!-- 거래 종류 -->
+
+<div class="card">
+
+<h2>🏠 거래 종류 선택</h2>
+
+<div class="grid">
+
+<button class="option typeBtn" data-text="아파트 매매계약">🏢 아파트 매매계약</button>
+<button class="option typeBtn" data-text="아파트 전세계약">🔐 아파트 전세계약</button>
+<button class="option typeBtn" data-text="아파트 월세계약">💰 아파트 월세계약</button>
+
+<button class="option typeBtn" data-text="빌라 매매계약">🏘️ 빌라 매매계약</button>
+<button class="option typeBtn" data-text="빌라 전세계약">🔑 빌라 전세계약</button>
+<button class="option typeBtn" data-text="빌라 월세계약">💵 빌라 월세계약</button>
+
+<button class="option typeBtn" data-text="상가 매매계약">🏬 상가 매매계약</button>
+<button class="option typeBtn" data-text="상가 월세계약">🧾 상가 월세계약</button>
+
+<button class="option typeBtn" data-text="토지 매매계약">🌳 토지 매매계약</button>
+
+</div>
+
+</div>
+
+<!-- 특약 -->
+
+<div class="card">
+
+<h2>📝 가계약 특약 선택</h2>
+
+<div class="grid">
+
+<button class="option memoBtn"
+data-text="가계약금 입금과 동시에 본 계약은 성립합니다. 미기재 사항은 일반 부동산 거래 관례에 따르기로 합니다.">
+입금과 동시에 계약성립
+</button>
+
+<button class="option memoBtn"
+data-text="현 시설 상태를 기준으로 현장 확인 후 계약하며, 계약서 작성일에 매도인과 매수인이 상호 협의하여 계약을 체결하기로 한다.">
+현상태 계약 서작성
+</button>
+
+<button class="option memoBtn"
+data-text="정확한 잔금일, 소유권이전등기일 및 특약사항은 계약서 작성 시 매도인과 매수인이 상호 협의하여 결정하기로 합니다.">
+매매/잔금일 협의
+</button>
+
+<button class="option memoBtn"
+data-text="계약일 현재 등기사항전부증명서상 근저당등 소유권을  제한하는 어떻한 설정도 없는 상태에서 계약이다. 이후 매도인은 잔금일까지 새로운 권리변동을 일으키지 않아야 합니다.">
+매매/소유권 제한없다
+</button>
+
+<button class="option memoBtn"
+data-text="매도인은 잔금일 이전까지 본 부동산에 설정된 근저당권 등 일체의 담보권을 말소하여야 하며, 부득이 잔금일과 동시에 말소하는 경우에는 잔금 수령과 동시에 말소에 필요한 서류 일체를 매수인에게 제공하고 소유권 이전에 지장이 없도록 하여야 합니다.">
+매매/근저당 말소
+</button>
+
+<button class="option memoBtn"
+data-text="매수인의 귀책 사유로 계약이 해제될 경우 가계약금은 반환하지 않으며, 매도인의 귀책 사유로 계약이 해제될 경우 매도인은 가계약금의 배액을 배상하기로 한다.">
+매매/가계약금반환
+</button>
+
+<button class="option memoBtn"
+data-text="위 내용으로 계약을 진행 예정입니다. 위 내용에 이의 없으시면 매도인은 해당 중개사에게 은행 계좌 번호를, 매수인은 해당 중개사에게서 받은 계좌에 가계약금 입금을 부탁드립니다.">
+매매/가계약동의
+</button>
+
+<button class="option memoBtn"
+data-text="임대차 기간은 2년으로 합니다.">
+임대차/계약기간
+</button>
+
+<button class="option memoBtn"
+data-text="정확한 입주일과 특약사항은 계약서 작성 시 임대인과 임차인이 상호 협의하여 결정하기로 합니다.">
+임대차/입주일협의
+</button>
+
+
+<button class="option memoBtn"
+data-text="계약일 현재 등기사항전부증명서상 근저당권, 가압류, 압류 등 소유권을 제한하는 어떠한 권리설정도 없는 상태에서 계약하며, 임대인은 임차인이 전입신고 및 확정일자를 완료하는 날까지 새로운 근저당권 설정, 가압류, 압류 기타 권리변동 행위를 하지 않아야 합니다.">
+임대차/근저당 없는 경우
+
+</button>
+
+<button class="option memoBtn"
+data-text="임대인은 잔금일 이전까지 본 부동산에 현재 설정된 근저당권 외에 추가 근저당권 설정, 가압류, 압류 기타 새로운 권리설정 행위를 하여서는 아니 되며, 부득이 새로운 설정행위를 할 경우에는 사전에 임차인에게 고지하고 동의를 받아야 합니다.">
+임대차/근저당 있는 경우
+</button>
+
+<button class="option memoBtn"
+data-text="본 가계약금은 임차인의 귀책 사유로 계약이 해제될 때 반환되지 않으며, 임대인의 귀책 사유로 계약이 해제될 경우 임대인은 가계약금의 배액을 배상해야 합니다.">
+임대차/가계약금 반환
+</button>
+
+<button class="option memoBtn"
+data-text="위 내용으로 계약을 진행 예정입니다. 위 내용에 이의 없으시면 임대인은 해당 중개사에게 은행 계좌 번호를, 임차인은 해당 중개사에게서 받은 계좌에 가계약금 입금을 부탁드립니다.">
+임대차/가계약 동의
+</button>
+
+</div>
+
+</div>
+
+<!-- 계약 정보 -->
+
+<div class="card">
+
+<h2>✍️ 계약 정보 입력</h2>
+
+<div class="label">📌 거래 금액 종류 선택</div>
+
+<div class="grid">
+
+<button class="option priceBtn active" data-type="sale">💵 매매금액</button>
+<button class="option priceBtn" data-type="jeonse">🔐 전세금액</button>
+<button class="option priceBtn" data-type="rent">💰 임대차보증금 / 월세</button>
+
+</div>
+
+<div class="label">📍 매물명/주소</div>
+<div class="input-wrap">
+<input type="text" id="house" placeholder="예) 오천읍 원동 아파트 101동 1001호">
+<button class="clear-btn" onclick="clearInput('house')">✖</button>
+</div>
+
+<!-- 매매 -->
+
+<div id="saleBox">
+
+<div class="label">💵 매매금액</div>
+<div class="input-wrap">
+<input type="text" id="salePrice" placeholder="예) 3억 5천만원">
+<button class="clear-btn" onclick="clearInput('salePrice')">✖</button>
+</div>
+
+</div>
+
+<!-- 전세 -->
+
+<div id="jeonseBox" class="hidden">
+
+<div class="label">🔐 전세금액</div>
+<div class="input-wrap">
+<input type="text" id="jeonsePrice" placeholder="예) 2억 3천만원">
+<button class="clear-btn" onclick="clearInput('jeonsePrice')">✖</button>
+</div>
+
+</div>
+
+<!-- 월세 -->
+
+<div id="rentBox" class="hidden">
+
+<div class="label">💰 임대차보증금</div>
+<div class="input-wrap">
+<input type="text" id="deposit" placeholder="예) 1000만원">
+<button class="clear-btn" onclick="clearInput('deposit')">✖</button>
+</div>
+
+<div class="label">📅 월세</div>
+<div class="input-wrap">
+<input type="text" id="monthly" placeholder="예) 50만원">
+<button class="clear-btn" onclick="clearInput('monthly')">✖</button>
+</div>
+
+</div>
+
+<div class="label">💵 가계약금</div>
+<div class="input-wrap">
+<input type="text" id="money" placeholder="예) 300만원">
+<button class="clear-btn" onclick="clearInput('money')">✖</button>
+</div>
+
+<div class="label">📅 계약서작성일</div>
+<div class="input-wrap">
+<input type="date" id="date">
+<button class="clear-btn" onclick="clearInput('date')">✖</button>
+</div>
+
+<div class="label">🏦 잔금 / 입주예정일</div>
+<div class="input-wrap">
+<input type="date" id="moveDate">
+<button class="clear-btn" onclick="clearInput('moveDate')">✖</button>
+</div>
+
+<div class="label">👤 매수인 / 임차인</div>
+<div class="input-wrap">
+<input type="text" id="buyer" placeholder="이름 입력">
+<button class="clear-btn" onclick="clearInput('buyer')">✖</button>
+</div>
+
+<div class="label">👤 매도인 / 임대인</div>
+<div class="input-wrap">
+<input type="text" id="seller" placeholder="이름 입력">
+<button class="clear-btn" onclick="clearInput('seller')">✖</button>
+</div>
+
+</div>
+
+<!-- 결과 -->
+
+<div class="card">
+
+<h2>📄 가계약 문구 자동 생성</h2>
+
+<textarea id="result"></textarea>
+
+<div class="btn-group">
+
+<button class="copy-btn" onclick="copyText()">📋 복사</button>
+<button class="copy-btn" onclick="printText()">🖨 인쇄</button>
+<button class="copy-btn" onclick="clearAll()">🗑 전체삭제</button>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="footer">
+보성부동산 · 가계약 선택형 시스템
+</div>
+
+<script>
+
+let selectedType = "";
+let selectedMemos = [];
+let selectedPriceType = "sale";
+
+const typeBtns = document.querySelectorAll(".typeBtn");
+const memoBtns = document.querySelectorAll(".memoBtn");
+const priceBtns = document.querySelectorAll(".priceBtn");
+
+typeBtns.forEach(btn=>{
+
+  btn.addEventListener("click",()=>{
+
+    typeBtns.forEach(b=>b.classList.remove("active"));
+
+    btn.classList.add("active");
+
+    selectedType = btn.dataset.text;
+
+    if(selectedType.includes("매매")){
+      selectedPriceType="sale";
+    }
+
+    if(selectedType.includes("전세")){
+      selectedPriceType="jeonse";
+    }
+
+    if(selectedType.includes("월세")){
+      selectedPriceType="rent";
+    }
+
+    priceBtns.forEach(b=>b.classList.remove("active"));
+
+    document.querySelector(`[data-type="${selectedPriceType}"]`)
+      .classList.add("active");
+
+    document.getElementById("saleBox").classList.add("hidden");
+    document.getElementById("jeonseBox").classList.add("hidden");
+    document.getElementById("rentBox").classList.add("hidden");
+
+    if(selectedPriceType==="sale"){
+      document.getElementById("saleBox").classList.remove("hidden");
+    }
+
+    if(selectedPriceType==="jeonse"){
+      document.getElementById("jeonseBox").classList.remove("hidden");
+    }
+
+    if(selectedPriceType==="rent"){
+      document.getElementById("rentBox").classList.remove("hidden");
+    }
+
+    generateText();
+
+  });
+
+});
+
+memoBtns.forEach(btn=>{
+
+  btn.addEventListener("click",()=>{
+
+    btn.classList.toggle("active");
+
+    const text = btn.dataset.text;
+
+    if(selectedMemos.includes(text)){
+
+      selectedMemos = selectedMemos.filter(t=>t!==text);
+
+    }else{
+
+      selectedMemos.push(text);
+
+    }
+
+    generateText();
+
+  });
+
+});
+
+priceBtns.forEach(btn=>{
+
+  btn.addEventListener("click",()=>{
+
+    priceBtns.forEach(b=>b.classList.remove("active"));
+
+    btn.classList.add("active");
+
+    selectedPriceType = btn.dataset.type;
+
+    document.getElementById("saleBox").classList.add("hidden");
+    document.getElementById("jeonseBox").classList.add("hidden");
+    document.getElementById("rentBox").classList.add("hidden");
+
+    if(selectedPriceType==="sale"){
+      document.getElementById("saleBox").classList.remove("hidden");
+    }
+
+    if(selectedPriceType==="jeonse"){
+      document.getElementById("jeonseBox").classList.remove("hidden");
+    }
+
+    if(selectedPriceType==="rent"){
+      document.getElementById("rentBox").classList.remove("hidden");
+    }
+
+    generateText();
+
+  });
+
+});
+
+document.querySelectorAll("input").forEach(input=>{
+
+  input.addEventListener("input",generateText);
+
+});
+
+function generateText(){
+
+  const house = document.getElementById("house").value;
+  const money = document.getElementById("money").value;
+
+  const salePrice = document.getElementById("salePrice").value;
+  const jeonsePrice = document.getElementById("jeonsePrice").value;
+  const deposit = document.getElementById("deposit").value;
+  const monthly = document.getElementById("monthly").value;
+
+  const rawDate = document.getElementById("date").value;
+  const rawMoveDate = document.getElementById("moveDate").value;
+
+  let formattedDate = "";
+  let formattedMoveDate = "";
+
+  if(rawDate){
+
+    const d = new Date(rawDate);
+
+    formattedDate =
+      d.getFullYear() + "년 " +
+      (d.getMonth()+1) + "월 " +
+      d.getDate() + "일";
+
+  }
+
+  if(rawMoveDate){
+
+    const md = new Date(rawMoveDate);
+
+    formattedMoveDate =
+      md.getFullYear() + "년 " +
+      (md.getMonth()+1) + "월 " +
+      md.getDate() + "일";
+
+  }
+
+  const buyer = document.getElementById("buyer").value;
+  const seller = document.getElementById("seller").value;
+
+  const now = new Date();
+
+  const writeDate =
+    now.getFullYear() + "년 " +
+    (now.getMonth()+1) + "월 " +
+    now.getDate() + "일";
+
+  let text = "";
+
+  text += "📋 부동산 가계약서\n\n";
+
+  text += "• 거래종류 : " + selectedType + "\n";
+  text += "• 매물명/주소 : " + house + "\n";
+
+  if(selectedPriceType==="sale"){
+    text += "• 매매금액 : " + salePrice + "\n";
+  }
+
+  if(selectedPriceType==="jeonse"){
+    text += "• 전세금액 : " + jeonsePrice + "\n";
+  }
+
+  if(selectedPriceType==="rent"){
+    text += "• 임대차보증금 : " + deposit + "\n";
+    text += "• 월세 : " + monthly + "\n";
+  }
+
+  text += "• 가계약금 : " + money + "\n";
+  text += "• 계약서작성일 : " + formattedDate + "\n";
+  text += "• 잔금/입주예정일 : " + formattedMoveDate + "\n";
+  text += "• 매수인/임차인 : " + buyer + "\n";
+  text += "• 매도인/임대인 : " + seller + "\n\n";
+
+  text += "📝 특약사항\n";
+
+  if(selectedMemos.length===0){
+
+    text += "- 특약 선택 없음\n";
+
+  }else{
+
+    selectedMemos.forEach((memo,i)=>{
+
+      text += (i+1) + ". " + memo + "\n";
+
+    });
+
+  }
+
+  text += "\n";
+  text += "보성공인중개사사무소:제형석\n\n";
+  text += "• 작성일 : " + writeDate + "\n";
+
+  document.getElementById("result").value = text;
+
+}
+
+function copyText(){
+
+  const text = document.getElementById("result");
+
+  text.select();
+
+  text.setSelectionRange(0,99999);
+
+  navigator.clipboard.writeText(text.value);
+
+  alert("📋 가계약 문구가 복사되었습니다.");
+
+}
+
+function clearInput(id){
+
+  document.getElementById(id).value = "";
+
+  generateText();
+
+}
+
+function clearAll(){
+
+  document.querySelectorAll("input").forEach(input=>{
+
+    input.value="";
+
+  });
+
+  selectedMemos=[];
+
+  memoBtns.forEach(btn=>{
+
+    btn.classList.remove("active");
+
+  });
+
+  selectedType="";
+
+  typeBtns.forEach(btn=>{
+
+    btn.classList.remove("active");
+
+  });
+
+  generateText();
+
+}
+
+function printText(){
+
+  const content = document.getElementById("result").value;
+
+  const win = window.open("","","width=900,height=700");
+
+  win.document.write(`
+
+  <html>
+
+  <head>
+
+  <title>가계약 출력</title>
+
+  <style>
+
+  body{
+    font-family:'Malgun Gothic';
+    padding:40px;
+    line-height:1.9;
+    white-space:pre-wrap;
+    font-size:20px;
+    font-weight:bold;
+  }
+
+  h1{
+    text-align:center;
+    font-size:34px;
+    margin-bottom:30px;
+  }
+
+  .paper{
+    border:2px solid #333;
+    padding:30px;
+    border-radius:10px;
+  }
+
+  </style>
+
+  </head>
+
+  <body>
+
+  <h1>📋 부동산 가계약서</h1>
+
+  <div class="paper">
+  ${content}
+  </div>
+
+  </body>
+
+  </html>
+
+  `);
+
+  win.document.close();
+
+  win.print();
+
+}
+
+generateText();
+
+</script>
+
+</body>
+</html>
+```

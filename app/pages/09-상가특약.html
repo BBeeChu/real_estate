@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>상가월세</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+}
+
+body{
+    margin:0;
+    font-family:'Malgun Gothic',sans-serif;
+    background:#111;
+    color:#fff;
+    overflow:hidden;
+}
+
+/* 헤더 */
+header{
+    background:#000;
+    padding:14px;
+    text-align:center;
+    font-size:40px;
+    font-weight:bold;
+    border-bottom:1px solid #333;
+}
+
+/* 전체 */
+.wrap{
+    display:flex;
+    height:calc(100vh - 76px);
+}
+
+/* 왼쪽 */
+.left{
+    width:50%;
+    overflow-y:auto;
+    padding:10px;
+    border-right:1px solid #333;
+    background:#181818;
+}
+
+/* 오른쪽 */
+.right{
+    width:50%;
+    padding:10px;
+    background:#101010;
+    display:flex;
+    flex-direction:column;
+}
+
+/* 특약 버튼 */
+.item{
+    background:#222;
+    margin-bottom:4px;
+    padding:6px 8px;
+    border-radius:6px;
+    cursor:pointer;
+    transition:0.2s;
+    font-size:23px;
+    line-height:1.2;
+    border:1px solid #333;
+    user-select:none;
+    word-break:keep-all;
+}
+
+.item:hover{
+    background:#333;
+}
+
+.item.active{
+    background:#00a86b;
+    color:#fff;
+    border-color:#00d084;
+}
+
+/* 결과창 */
+#result{
+    flex:1;
+    overflow-y:auto;
+    background:#000;
+    border:1px solid #333;
+    border-radius:8px;
+    padding:6px;
+    font-size:23px;
+    line-height:1.15;
+    word-break:keep-all;
+}
+
+/* 결과 항목 간격 완전 축소 */
+.result-item{
+    display:flex;
+    align-items:flex-start;
+    gap:6px;
+    margin:0 !important;
+    padding:1px 0 !important;
+    line-height:1.15 !important;
+    border-bottom:1px solid #1d1d1d;
+}
+
+/* 순번 */
+.num{
+    min-width:34px;
+    color:#00d084;
+    font-weight:bold;
+}
+
+/* 문장 */
+.txt{
+    flex:1;
+}
+
+/* 복사 버튼 */
+.copy-btn{
+    margin-top:8px;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    background:#00a86b;
+    color:#fff;
+    font-size:23px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.copy-btn:hover{
+    background:#00c27b;
+}
+
+/* 모바일 */
+@media(max-width:900px){
+
+    header{
+        font-size:28px;
+        padding:12px;
+    }
+
+    .wrap{
+        flex-direction:column;
+        height:calc(100vh - 86px);
+    }
+
+    .left,
+    .right{
+        width:100%;
+        height:50%;
+    }
+
+    .item,
+    #result,
+    .copy-btn{
+        font-size:18px;
+    }
+
+}
+</style>
+</head>
+
+<body>
+
+<header>
+상가월세
+</header>
+
+<div class="wrap">
+
+    <!-- 왼쪽 -->
+    <div class="left" id="list"></div>
+
+    <!-- 오른쪽 -->
+    <div class="right">
+
+        <div id="result"></div>
+
+        <button class="copy-btn" onclick="copyText()">
+            특약 복사
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+const items = [
+
+"1. 현장 및 시설 확인",
+"임차인은 현장을 직접 확인하고 현 시설 상태대로 계약한다.",
+"임차인은 면적, 용도, 진입로, 전기·수도·가스 및 인허가 가능 여부를 직접 확인 후 계약한다.",
+"기존 시설물 및 집기 상태는 임차인이 충분히 확인 후 인수하기로 한다.",
+"무상 제공 시설물 및 집기는 추후 고장이나 하자 발생 시 임대인에게 책임을 묻지 않기로 한다.",
+  
+"2. 권리관계 및 인도",
+"임대인은 계약일 현재 등기사항전부증명서상 권리관계를 잔금일 및 사업자등록 완료 시까지 유지하기로 한다.",
+"임대인은 임차인의 사전 동의 없이 추가 근저당권 설정, 가압류, 압류 등 권리제한 행위를 하지 않기로 한다.",
+"소유권 이전, 경매, 공매 등으로 임차인의 영업에 지장이 발생하지 않도록 한다.",
+"임대인은 잔금일까지 임차인이 정상적으로 영업할 수 있도록 점포를 인도하기로 한다.",
+"현 임차인, 유치권, 명도 문제 등 영업에 지장을 주는 사항 발생 시 임대인이 책임 처리하기로 한다.",
+
+
+"3. 업종 및 영업",
+"임차인은 관계 법령에 위반되지 않는 범위 내에서 계약서상 지정 업종으로 영업하기로 한다.",
+"불법 영업, 불법 용도변경 및 민원 발생에 대한 책임은 임차인이 부담한다.",
+"동일 건물 내 동일 업종 제한 여부는 별도 협의하기로 한다.",
+
+"4. 시설수리 및 유지관리",
+"건물의 구조적 하자, 누수 및 메인 전기·수도 설비 문제는 임대인이 부담하기로 한다.",
+"임차인의 고의 또는 과실로 발생한 파손 및 고장은 임차인이 책임지기로 한다.",
+"전등, 수도부속, 손잡이 등 경미한 소모품 수선은 임차인 부담으로 한다.",
+"냉난방기, 보일러 등 주요 설비는 입주 후 즉시 확인하며, 하자 발견 시 임대인에게 통보 후 협의 처리하기로 한다.",
+
+"5. 차임·관리비 및 공과금",
+"전기, 수도, 가스, 인터넷 및 관리비 등 사용료는 임차인이 부담한다.",
+"관리비 부과 기준은 건물 관리규정에 따른다.",
+"계약 종료 시 공과금 및 관리비 정산 완료 후 명도하기로 한다.",
+"연체된 관리비 및 공과금은 실제 사용자 부담 원칙으로 한다.",
+
+"6. 권리금 관련",
+"본 계약은 권리금 계약과 별개이며, 권리금 반환 문제는 임대인과 무관함을 확인한다.",
+"기존 임차인과의 권리금 문제는 당사자 간 책임으로 처리하기로 한다.",
+"임대인은 상가건물임대차보호법상 권리금 회수기회 보호 의무를 준수하기로 한다.",
+
+"7. 계약해지 및 위약",
+"임차인이 2기 이상 차임을 연체할 경우 임대인은 계약을 해지할 수 있다.",
+"임차인의 무단 전대 또는 무단 용도변경 시 계약 해지 사유로 한다.",
+"계약 위반으로 인한 손해는 귀책 당사자가 책임지기로 한다.",
+"임차인의 사정으로 중도 퇴실할 경우 신규 임차인 주선 전까지의 차임 및 중개보수는 임차인이 부담하기로 한다.",
+
+"8. 명도 및 원상복구",
+"계약 종료 시 임차인은 원상복구 후 명도하기로 한다.",
+"임차인이 설치한 시설물은 철거 후 반환하는 것을 원칙으로 하되, 임대인이 승계하기로 한 시설은 제외한다.",
+"임차인은 계약 종료일까지 사업자등록 이전 및 점포 명도를 완료하기로 한다.",
+
+"9. 기타 특약",
+"화재, 재난, 행정처분 등 불가항력 사유 발생 시 상호 협의하여 처리하기로 한다.",
+"본 계약서에 명시되지 않은 사항은 상가건물임대차보호법 및 민법에 따른다.",
+"양 당사자는 공인중개사 입회하에 현장을 확인 후 계약하였음을 확인한다.",
+  
+"10. 임대인 계좌 정보",
+ "임대인 홍길동 은행계좌 농협 00000000",
+];
+
+const list = document.getElementById("list");
+const result = document.getElementById("result");
+
+let selected = [];
+
+items.forEach(text=>{
+
+    const div=document.createElement("div");
+
+    div.className="item";
+    div.innerText=text;
+
+    div.onclick=()=>{
+
+        if(div.classList.contains("active")){
+
+            div.classList.remove("active");
+
+            selected=selected.filter(v=>v!==text);
+
+        }else{
+
+            div.classList.add("active");
+
+            selected.push(text);
+
+        }
+
+        renderResult();
+
+    };
+
+    list.appendChild(div);
+
+});
+
+function renderResult(){
+
+    result.innerHTML="";
+
+    selected.forEach((text,index)=>{
+
+        result.innerHTML += `
+            <div class="result-item">
+
+                <div class="num">
+                    ${index + 1}.
+                </div>
+
+                <div class="txt">
+                    ${text}
+                </div>
+
+            </div>
+        `;
+
+    });
+
+}
+
+function copyText(){
+
+    if(selected.length===0){
+
+        alert("선택된 특약이 없습니다.");
+        return;
+
+    }
+
+    let text = selected.map((v,i)=>`${i+1}. ${v}`).join("\n");
+
+    navigator.clipboard.writeText(text)
+    .then(()=>{
+        alert("복사 완료");
+    })
+    .catch(()=>{
+        alert("복사 실패");
+    });
+
+}
+
+</script>
+
+
+<style>
+  #re-custom-panel {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 2147483647;
+    width: min(420px, calc(100vw - 32px));
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: #111827;
+  }
+  #re-custom-panel details {
+    border: 1px solid #cfd8e3;
+    border-radius: 10px;
+    background: #ffffff;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, .18);
+    overflow: hidden;
+  }
+  #re-custom-panel summary {
+    cursor: pointer;
+    padding: 12px 14px;
+    font-weight: 800;
+    background: #1f6feb;
+    color: white;
+    user-select: none;
+  }
+  #re-custom-panel .body {
+    padding: 12px;
+    display: grid;
+    gap: 8px;
+  }
+  #re-custom-panel textarea {
+    width: 100%;
+    min-height: 78px;
+    resize: vertical;
+    border: 1px solid #cfd8e3;
+    border-radius: 8px;
+    padding: 9px;
+    font: inherit;
+  }
+  #re-custom-panel button {
+    border: 1px solid #cfd8e3;
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 8px 10px;
+    cursor: pointer;
+    font-weight: 700;
+  }
+  #re-custom-panel button.primary {
+    background: #1f6feb;
+    border-color: #1f6feb;
+    color: white;
+  }
+  #re-custom-panel .actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  #re-custom-panel .list {
+    max-height: 180px;
+    overflow: auto;
+    display: grid;
+    gap: 6px;
+  }
+  #re-custom-panel .item {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 8px;
+    background: #f9fafb;
+    line-height: 1.45;
+  }
+  #re-custom-panel .item-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  #re-custom-panel .delete {
+    color: #b42318;
+    padding: 4px 7px;
+    flex: 0 0 auto;
+  }
+  @media print {
+    #re-custom-panel { display: none; }
+  }
+</style>
+<div id="re-custom-panel">
+  <details>
+    <summary>내 문구 추가</summary>
+    <div class="body">
+      <textarea id="re-custom-input" placeholder="이 HTML에만 저장할 문구를 입력하세요."></textarea>
+      <div class="actions">
+        <button class="primary" id="re-custom-add" type="button">추가</button>
+        <button id="re-custom-copy" type="button">내 문구 복사</button>
+        <button id="re-custom-clear" type="button">전체 삭제</button>
+      </div>
+      <div class="list" id="re-custom-list"></div>
+    </div>
+  </details>
+</div>
+<script>
+(function () {
+  const pageId = "09-상가특약";
+  const key = "realEstateCustomClauses:" + pageId;
+  const input = document.getElementById("re-custom-input");
+  const list = document.getElementById("re-custom-list");
+  const add = document.getElementById("re-custom-add");
+  const copy = document.getElementById("re-custom-copy");
+  const clear = document.getElementById("re-custom-clear");
+
+  function read() {
+    try {
+      const value = JSON.parse(localStorage.getItem(key) || "[]");
+      return Array.isArray(value) ? value : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function write(values) {
+    localStorage.setItem(key, JSON.stringify(values));
+  }
+
+  function render() {
+    const values = read();
+    list.innerHTML = "";
+    if (!values.length) {
+      list.innerHTML = '<div style="color:#6b7280;font-size:13px;">아직 추가한 문구가 없습니다.</div>';
+      return;
+    }
+    values.forEach((value, index) => {
+      const row = document.createElement("div");
+      row.className = "item";
+      row.innerHTML = '<div class="item-row"><div>' + (index + 1) + '. ' + escapeHtml(value) + '</div><button class="delete" type="button">삭제</button></div>';
+      row.querySelector("button").addEventListener("click", () => {
+        const next = read().filter((_, itemIndex) => itemIndex !== index);
+        write(next);
+        render();
+      });
+      list.appendChild(row);
+    });
+  }
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    }[char]));
+  }
+
+  add.addEventListener("click", () => {
+    const value = input.value.trim();
+    if (!value) {
+      alert("추가할 문구를 입력하세요.");
+      return;
+    }
+    const values = read();
+    values.push(value);
+    write(values);
+    input.value = "";
+    render();
+  });
+
+  copy.addEventListener("click", async () => {
+    const text = read().map((value, index) => `${index + 1}. ${value}`).join("\n");
+    if (!text) {
+      alert("복사할 문구가 없습니다.");
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (error) {
+      const temp = document.createElement("textarea");
+      temp.value = text;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand("copy");
+      temp.remove();
+    }
+    alert("내 문구 복사 완료");
+  });
+
+  clear.addEventListener("click", () => {
+    if (!confirm("이 HTML에 추가한 문구를 모두 삭제할까요?")) return;
+    write([]);
+    render();
+  });
+
+  render();
+}());
+</script>
+
+</body>
+</html>
+```

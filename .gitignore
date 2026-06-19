@@ -1,0 +1,5 @@
+.omx/
+__pycache__/
+*.pyc
+real_estate_static_app.zip
+.DS_Store

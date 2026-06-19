@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>보성부동산 특약 선택기</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    display:flex;
+    height:100vh;
+    overflow:hidden;
+}
+
+/* 왼쪽 */
+.left{
+    width:45%;
+    padding:20px;
+    overflow-y:auto;
+    border-right:2px solid #ddd;
+    background:#fff;
+}
+
+/* 제목 */
+.mainTitle{
+    font-size:38px;
+    font-weight:bold;
+    margin-bottom:20px;
+    position:sticky;
+    top:0;
+    background:#fff;
+    padding-bottom:10px;
+    z-index:10;
+}
+
+/* 소제목 */
+.sectionTitle{
+    font-size:26px;
+    margin-bottom:15px;
+    font-weight:bold;
+}
+
+/* 선택 항목 */
+.option{
+    display:block;
+    font-size:20px;
+    line-height:1.6;
+    margin:10px 0;
+    padding:12px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:0.2s;
+    border:1px solid #ddd;
+}
+
+.option input{
+    transform:scale(1.3);
+    margin-right:10px;
+}
+
+/* 선택 시 강조 */
+.option.checked{
+    background:#e6f0ff;
+    color:#0057ff;
+    font-weight:bold;
+    border:1px solid #0057ff;
+}
+
+/* 오른쪽 */
+.right{
+    width:55%;
+    background:#000;
+    color:#fff;
+    padding:20px;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+}
+
+/* 생성 결과 제목 상단 고정 */
+.resultTitle{
+    font-size:34px;
+    font-weight:bold;
+    margin-bottom:15px;
+    position:sticky;
+    top:0;
+    background:#000;
+    padding-bottom:10px;
+    z-index:10;
+}
+
+/* 결과창 스크롤 */
+.resultWrap{
+    flex:1;
+    overflow-y:auto;
+    padding-right:10px;
+    margin-bottom:70px;
+}
+
+/* 결과창 */
+#result{
+    white-space:pre-wrap;
+    font-size:23px;
+    line-height:1.25;
+    word-break:keep-all;
+}
+
+/* 복사 버튼 */
+.copyBtn{
+    position:absolute;
+    bottom:20px;
+    right:20px;
+    padding:14px 22px;
+    font-size:18px;
+    cursor:pointer;
+    border:none;
+    border-radius:10px;
+    font-weight:bold;
+}
+
+/* 스크롤바 */
+::-webkit-scrollbar{
+    width:10px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#888;
+    border-radius:10px;
+}
+
+::-webkit-scrollbar-track{
+    background:#eee;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 왼쪽 -->
+<div class="left">
+
+<div class="mainTitle">📋 보성부동산 아파트•주택 특약</div>
+
+아파트
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="현 시설 상태에서의 등기사항 전부증명서를 확인하고, 공인중개사와 매수인이 현장확인 후 계약을 체결한다. 매도인은 잔금일 까지 동일 상태로 유지 관리 후 인도해야 한다.">
+(아파트)현 시설 상태 계약
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="OO은행 채권최고액 금OO원 상태의 계약으로 잔금일에 매도인이 상환하고 말소하기로 하며, 매도인은 잔금일까지 채무를 부담하는 등의 새로운 권리변동을 일으키지 않아야 한다..">
+(아파트1) 근저당 말소
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="매도인은 잔금일 이전까지 본 부동산에 설정된 근저당권 등 일체의 담보권을 말소하여야 하며, 부득이 잔금일과 동시에 말소하는 경우에는 잔금 수령과 동시에 말소에 필요한 서류 일체를 매수인에게 제공하고 소유권 이전에 지장이 없도록 하여야 한다..">
+(아파트2) 근저당 말소 조건
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="계약일 현재 등기사항전부증명서상 근저당등 소유권을  제한하는 어떻한 설정도 없는 상태에서 계약이다. 이후 매도인은 잔금일까지 새로운 권리변동을 일으키지 않아야 한다.">
+(아파트3) 근저당 없을 경우
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="매도인은 체납된 관리비 및 공과금을 잔금일까지 정산한다.">
+(아파트) 공과금 정리
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="잔금일 이전에 발생한 중대한 하자(보일러, 난방, 수도·배수 누수, 전기누전 등 주요 시설의 기능상 하자)에 대하여는 소유권이전 후에도 매도인이 책임지고 수리하기로 한다. 단, 잔금 및 소유권이전일 이후 발생한 하자와 고장에 대하여는 매수인의 책임으로 하며, 매수인이 직접 수리 및 부담하기로 한다. 다만, 매수인은 해당 중대한 하자를 안 날로부터 6개월 이내에 매도인에게 통지하여야 한다.">
+(아파트) 하자수리책임
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="잔금일 이후 발생하는 시설물 고장 및 보일러배관의 누수, 수도관의 누수, 빗물의 유입 등 모든 하자 및 시설물에 대해서는 매수인의 책임이다.">
+(아파트) 잔금 이후 하자
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="매도인은 계약하는 날 까지도 불법건축물에 대해서 고지하지 않은 상태에서, 계약이 이루어진 경우, 새로이 발견되는 불법건축물 문제는 매도인이 책임진다.">
+(아파트) 불법건축물 책임
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="본 부동산 내에 있는 가구(냉장고 에어컨 쇼파)는 현 상태 기준으로 무상제공 한다.단,매매가격에 옵션시설의 가격은 포함되지 않으므로 작동 되지 않을 시 매도인에게 책임을 물을 수 없다.">
+(아파트) 옵션이 고장날 경우
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="매도인은 잔금일 기준 공실 상태로 인도하며, 청결한 상태로 매수인에게 인도해야 한다.">
+(아파트) 공실로 청결히 인도
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="매도인은 매수인의 실거주 및 전입신고가 가능하도록 잔금일까지 명도를 완료하기로 한다.">
+(아파트) 공실 인도 조건
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="본 계약 체결 이후 일방의 귀책사유로 인하여 계약이 해제될 경우, 위약금은 계약금을 기준으로 한다. 즉, 매수인의 귀책사유로 계약이 해제되는 경우에는, 매수인은 지급한 계약금을 포기해야 하고, 매도인의 귀책사유로 계약이 해제되는 경우에는, 매수인으로부터 수령한 계약금의 배액을, 매수인에게 즉시 지급하기로 한다.">
+(아파트) 위약금 계약
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="매수인은 대출 미승인 사유만으로 계약 해제를 요구할 수 없다.">
+(아파트) 대출 미승인시해제 불가
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="매도인은 잔금일까지 전입세대 및 임차권 관계가 없도록 유지해야 한다.">
+(아파트) 전입세대 정리
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="현 임차인의 보증금 반환은 매도인이 책임진다.">
+(아파트) 임차인 보증금 매도자책임
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="본 계약은 임차인의 전세보증금을 승계하는 조건으로 체결하며, 임대차 계약 내용은 매수인이 확인 후 승계하기로 한다.">
+(아파트) 임차인 보증금 승계
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="매수자는 매도자에게 관리비선수금   00만원을 잔금에 별도 지급해야 한다.">
+(아파트) 관리비선수금
+</label>
+
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="매도자의 은행계좌는 00-0000-000이다.">
+(아파트) 매도자  계좌번호
+</label>
+
+단독주택
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="매수인은 계약 체결 전 공인중개사와 함께 등기사항전부증명서, 건축물대장, 토지대장,토지이용계획확인원, 지적도를 확인을 했고, 도면상 경계와 현실경계, 위성사진도 비교확인 했고, 현장확인도 수회를 하고나서 본 단독주택은 현 시설 상태 그대로 매매계약하기로 한다.">
+(단독주택)현 시설 상태 계약
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="OO은행 채권최고액 금OO원 상태의 계약으로 잔금일에 매도인이 상환하고 말소하기로 하며, 매도인은 잔금일까지 채무를 부담하는 등의 새로운 권리변동을 일으키지 않아야 한다.">
+(단독주택 1) 근저당 말소
+</label>
+<label class="option">
+<input type="checkbox" onchange="generate()" value="매도인은 잔금일 이전까지 본 부동산에 설정된 근저당권 등 일체의 담보권을 말소하여야 하며, 부득이 잔금일과 동시에 말소하는 경우에는 잔금 수령과 동시에 말소에 필요한 서류 일체를 매수인에게 제공하고 소유권 이전에 지장이 없도록 하여야 한다.">
+(단독주택2) 근저당 말소 조건
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="계약일 현재 등기사항전부증명서상 근저당등 소유권을  제한하는 어떻한 설정도 없는 상태에서 계약이다. 이후 매도인은 잔금일까지 새로운 권리변동을 일으키지 않아야 한다.">
+(단독주택3) 근저당 없을 경우
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="매도인은 잔금일 전까지 건물 및 토지에 관한 각종 공과금, 세금, 전기·수도요금 등을 정산 후 인도하기로 한다.">
+(단독주택) 공과금 정리
+</label>약 
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="잔금일 이전에 발생한 중대한 하자(보일러, 난방, 수도·배수 누수, 전기누전 등 주요 시설의 기능상 하자)에 대하여는 소유권이전 후에도 매도인이 책임지고 수리하기로 한다. 단, 잔금 및 소유권이전일 이후 발생한 하자와 고장에 대하여는 매수인의 책임으로 하며, 매수인이 직접 수리 및 부담하기로 한다. 다만, 매수인은 해당 중대한 하자를 안 날로부터 6개월 이내에 매도인에게 통지하여야 한다.">
+(단독주택) 하자수리책임
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="잔금일 이후 발생하는 시설물 고장 및 보일러배관의 누수, 수도관의 누수, 빗물의 유입 등 모든 하자 및 시설물에 대해서는 매수인의 책임이다.">
+(단독주택) 잔금 이후 하자
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="본 주택의 불법증축, 불법 구조변경, 위반건축물 여부 등에 대하여 매도인은 고지하였으며, 추후 미고지 사실 발견 시 책임은 매도인에게 있다.">
+(단독주택2) 미고지 불법건축물 책임
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="본 건물의 무허가 증축, 불법 구조변경, 위반건축물 여부 등에 대하여 공인중개사와 매도인의 설명이 충분히 있었고, 현장 확인을 했고,  충분히 알고나서 본 계약을 체결하므로,추후 매도인과 공인중개사에게 불법건축물, 무허가건축물, 무허가 증축,불법 구조변경에  대해서 책임을 묻지 않을 것을 확약하는 의미로, 매수인은 본 조항 말미에 서명 날인한다.매수인 홍 길 동  사인">
+(단독주택) 불법건축물에 대해 책임묻지 않는다
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="잔금 및 등기이전일 전 경계측량이 필요한 경우 비용은 매도인과 매수인이 공동 부담하기로 하며, 인접 토지와의 경계 분쟁 발생 시 잔금 전까지 매도인이 해결하기로 한다.">
+(단독주택) 옵션이 고장날 경우
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="대문, 담장, 창고, 정화조, 우수관, 배수시설 등 부속시설물은 현 상태 기준으로 인도한다.
+">
+(단독주택) 담장 창고  부속시설 현상태로  이전
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="건물 누수, 우천 시 침수, 보일러·상하수도·전기시설 등의 중대한 하자 발견 시 매도인은 잔금 전까지 수리 후 인도하기로 한다
+.">
+(단독주택) 하자 수리 후 인도
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="마당 내 수목, 조경시설, 데크, 컨테이너, 창고 등의 존치 여부는 현 상태 기준으로 하며 별도 협의 없는 경우 모두 포함하여 인도한다.">
+(단독주택) 수목 조경 창고 등 포함하여 인도
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="본 토지의 실제 사용면적과 공부상 면적 차이가 있을 경우에는 상호 이의를 제기하지 않기로 한다.">
+(단독주택) 면적차이
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="지하수, 상수도, 오수처리시설(정화조) 사용 상태에 대하여 매수인은 충분히 확인 후 계약한다.
+">
+(단독주택) 지하수 상수도 오수처리시설 
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="인접 토지의 통행로, 진입도로, 사도 사용 등에 관한 사항은 매수인이 현장확인 후 계약하며, 추후 문제 발생 시 매도인은 고의 은폐사항 외 책임지지 않는다.">
+(단독주택) 진입도로 사실관계
+</label>
+
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="잔존 폐기물 및 적치물은 매도인이 잔금일 및 등기이전일 이전까지 정리 후 인도하기로 한다.
+">
+(단독주택) 폐기물 처리
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="옥상 방수, 외벽 크랙, 누수 이력 등에 대해 매도인은 사실대로 고지하였으며, 고지하지 않은 하자 발견 시 매도인이 책임진다.">
+(단독주택) 하자 수리 후 인도
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="본 계약 체결 이후 일방의 귀책사유로 인하여 계약이 해제될 경우, 위약금은 계약금을 기준으로 한다. 즉, 매수인의 귀책사유로 계약이 해제되는 경우에는, 매수인은 지급한 계약금을 포기해야 하고, 매도인의 귀책사유로 계약이 해제되는 경우에는, 매수인으로부터 수령한 계약금의 배액을, 매수인에게 즉시 지급하기로 한다.">
+(단독주택) 위약금 계약
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="매수인은 대출 미승인 사유만으로 계약 해제를 요구할 수 없다.">
+(단독주택) 대출 미승인시해제 불가
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="매도인은 잔금일까지 전입세대 및 임차권 관계가 없도록 유지해야 한다.">
+(단독주택) 전입세대 정리
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="현 임차인의 보증금 반환은 매도인이 책임진다.">
+(단독주택) 임차인 보증금 매도자책임
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="본 계약은 임차인의 전세보증금을 승계하는 조건으로 체결하며, 임대차 계약 내용은 매수인이 확인 후 승계하기로 한다.">
+(단독주택) 임차인 보증금 매수인 승계
+</label>
+
+<label class="option">
+<input type="checkbox" onchange="generate()" value="매도자의 은행계좌는 00-0000-000이다.">
+(단독주택) 매도자  계좌번호
+</label>
+
+
+</div>
+
+<!-- 오른쪽 -->
+<div class="right">
+
+<div class="resultTitle">생성 결과</div>
+
+<div class="resultWrap">
+<div id="result">선택된 특약이 여기에 표시됩니다</div>
+</div>
+
+<button class="copyBtn" onclick="copyText()">복사</button>
+
+</div>
+
+<script>
+
+function generate(){
+
+    let options = document.querySelectorAll(".option");
+    let result = "";
+    let count = 1;
+
+    options.forEach((opt)=>{
+
+        let cb = opt.querySelector("input");
+
+        if(cb.checked){
+
+            opt.classList.add("checked");
+
+            result += count + ". " + cb.value + "\n\n";
+
+            count++;
+
+        }else{
+
+            opt.classList.remove("checked");
+
+        }
+
+    });
+
+    document.getElementById("result").innerText =
+    result || "선택된 특약이 여기에 표시됩니다";
+
+}
+
+function copyText(){
+
+    navigator.clipboard.writeText(
+        document.getElementById("result").innerText
+    );
+
+    alert("복사되었습니다");
+
+}
+
+</script>
+
+</body>
+</html>

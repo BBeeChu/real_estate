@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>특약 선택 PRO 최종 완성</title>
+
+<style>
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#eef2f6;
+}
+
+/* 헤더 */
+header{
+  background:#1e2f4d;
+  color:#fff;
+  padding:14px;
+  text-align:center;
+  font-size:40px;
+  font-weight:bold;
+}
+
+/* 레이아웃 */
+.wrap{
+  display:flex;
+  gap:10px;
+  padding:10px;
+}
+
+/* 박스 */
+.box{
+  flex:1;
+  background:#fff;
+  border-radius:10px;
+  padding:10px;
+  height:88vh;
+  overflow:auto;
+  box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* 🔥 특약 스타일 */
+.item{
+  font-size:24px;
+  padding:6px 8px;
+  border-bottom:1px solid #eee;
+  line-height:1.25;
+}
+
+/* 체크박스 */
+input[type="checkbox"]{
+  transform:scale(1.8);
+  margin-right:10px;
+}
+
+/* 🔥 결과 영역 검정 배경 */
+.result{
+  background:#000;
+  color:#fff;
+  border:1px solid #333;
+  padding:12px;
+  min-height:480px;
+  font-size:23px;
+  line-height:1.25;
+  border-radius:8px;
+}
+
+/* 🔥 결과 항목 간격 핵심 수정 */
+.result-item{
+  margin-bottom:10px;   /* 👉 항목 간격 */
+  padding-bottom:10px;
+  border-bottom:1px solid #333;
+}
+
+/* 버튼 */
+button{
+  width:100%;
+  padding:14px;
+  font-size:24px;
+  border:none;
+  border-radius:8px;
+  margin-top:6px;
+  cursor:pointer;
+}
+
+.copy{
+  background:#2d89ef;
+  color:#fff;
+}
+
+.clear{
+  background:#ff5b5b;
+  color:#fff;
+}
+
+h3{
+  font-size:28px;
+  margin:6px 0;
+}
+</style>
+</head>
+
+<body>
+
+<header>📋 보성부동산 원룸 특약 </header>
+
+<div class="wrap">
+
+<!-- LEFT -->
+<div class="box">
+<h3>특약 목록</h3>
+<div id="list"></div>
+</div>
+
+<!-- RIGHT -->
+<div class="box">
+<h3>📄 선택 특약 (복사용)</h3>
+
+<div id="out" class="result"></div>
+
+<button class="copy" onclick="copyText()">특약 복사</button>
+<button class="clear" onclick="resetAll()">초기화</button>
+
+</div>
+
+</div>
+
+<script>
+
+/* 🔥 실무 핵심 특약 (절대 유지) */
+const data = [
+"본 주택의 임대차에 관한 중개대상물확인·설명서 및 계약서상의 시설물 상태는 임대인이 고지한 사항과 임차인 및 공인중개사의 현장 확인 사항을 기초로 한 것이다.",
+"임대할 부분의 면적은 (공부상 전용면적 또는 연면적, 실측 면적)이다.",
+"000호의 옵션과 시설물 파손시와 분실시 또는 임차인의 부주의로 인한 화재발생시 임차인이 원상복구하여야 합니다, 단 임차인의 책임없는 노후된 옵션, 시설물의 생활마모 및 자연발생 고장 또는 파손은 임대인이 수리한다.[옵션 : 에어컨, 가스랜지, 세탁기, 냉장고, TV, 옷장, 이불장, 디지털도어록, 전자랜지, TV · 에어컨의 리모컨 2개 그 외 시설물 일체]",
+"임차인은 별도인 관리비 0만원과 30만원인 월 차임을 선불로, 지정된 날짜에 임대인 은행계좌   0000000                 로 입금해야 합니다.[관리비 항목: 상하수도료, 유선방송료,공동전기료,공동청소료,수선비,인터넷비 등]",
+"월 차임을 선불로, 지정된 날짜에 임대인 은행계좌  0000000                  로 입금해야 합니다.",
+"임차인은 해당 주택의 일체와 옵션을 사용하고 퇴거시에 반환하며, 파손시에는 변상및 원상복구하여야 합니다.",
+"000호의 개별 전기세(TV수신료 포함)와 도시가스요금 그리고 각종 공과금은 입주일부터 임차인이 부담합니다.",
+"임차인의 사정으로 임대기간 만료 전 이사시에는 임차인이 재임대해야 하며, 재임대시까지 월세,관리비,공과금 그리고 재임대계약시 중개보수는 임차인이 부담해야 합니다.",
+"임차인은 계약종료 2개월 전까지 계약의 연장여부를 임대인에게 통보해야 합니다. 통보하지 않을 시 주택임대차보호법에 따라 묵시적갱신이 되어, 계약은 자동연장이 됩니다.",
+"월차임을 2기 이상 연체시 임대인은 계약을 해지할 수 있습니다.",
+"임차인의 반려동물 동반 입실을 금지하며,반려동물 동반 입실 시 퇴실하기로 한다, 또, 실내에서 흡연을 금지하며, 실내에 스티커 부착을 절대 금지해야 합니다.",
+"퇴실 시 임차인이 퇴실 청소비용 0만원을 부담하고 임대인에게 지불해야 합니다. 애완동물 사육 금지, 실내 흡연 금지, 스티커 부착 금지를 위반하여 복구 비용이 추가 될 때는, 임차인이 추가 부담을 해야 합니다.",
+"임대인이 제공하는 시설외에 임차인이 추가한 시설의 공과금은 실사용자가 부담합니다.",
+"내부 인터넷 통신사를 변경시 임대인의 동의를 구해야 하며, 계약 종료시 원상복구해야 합니다.제반 비용은 임차인이 부담하여야 합니다.",
+"불법 용도 사용 시 즉시 계약 해지됩니다.",
+"임대인은 본 계약체결 당시 국세, 지방세 체납,근저당권 이자체납 사실이 없음을 고지하고, 임차인이 임대인의 미납과 체납에 관하여 열람 확인함에 있어서 임대인은 동의하기로 합니다.(임대인 0   0   0            ).",
+".본 주택을 인도받은 임차인은         년      월      일까지 전입신고와 임대차계약서에 확정일자를 받아야 하며, 임대인은 위 약정 일자의 다음 날까지 임차 주택에 저당권 등 담보권 설정을 할 수 없다.",
+"임차인은 이사 후 14일 이내 관할 행정복지센터에 주소이전을 신고해야 합니다. 가급적 빠르게 전·월세 계약서에 확정일자도 받으시기 바랍니다. 그리고,양 당사자는 계약 체결일로 부터 30일 이내에 행정복지센터 방문 또는국토부거래관리시스템을 통하여 주택임대차 계약을 신고해야 합니다(보증금 6천만 원 또는 월 임대료 30만 원을 초과하는 주택 임대차 계약).",
+"임대인은 계약만료시 원상복구하여 반환해야 하고, 각종 시설물 확인과 임차인의 각종 공과금 완납확인 후 바로 보증금을 지급해야 합니다..",
+"임대인은 새로운 세입자 입주일에 주소이전 및 이사를 무사히 할 수 있도록 해야 합니다. .",
+"본 계약에 명시되지 않는 사항은 주택임대차보호법 및 민법과 주택임대차계약의 거래관래에 따르기로 합니다 .",
+"첨부서류 : 중개대상물확인·설명서, 공제증서 사본 각 1부.",
+"영남에너지 (054-285-0852),한전(054-123)에 연락하여 명의등록 후 사용하여야 합니다.",
+"임대인의 계좌번호는 0000000                입니다.",
+
+];
+
+const list = document.getElementById("list");
+const out = document.getElementById("out");
+
+/* 생성 */
+data.forEach((t,i)=>{
+  const div = document.createElement("div");
+  div.className="item";
+
+  div.innerHTML=`
+    <input type="checkbox" class="chk" data-i="${i}">
+    ${i+1}. ${t}
+  `;
+
+  list.appendChild(div);
+});
+
+/* 출력 (🔥 div 구조로 변경) */
+document.addEventListener("change", ()=>{
+
+  let html="";
+
+  document.querySelectorAll(".chk:checked").forEach((c,i)=>{
+    html += `<div class="result-item">${i+1}. ${data[c.dataset.i]}</div>`;
+  });
+
+  out.innerHTML = html;
+});
+
+/* 복사 */
+function copyText(){
+
+  const text = document.getElementById("out").innerText;
+
+  if(!text || text.trim()===""){
+    alert("복사할 특약이 없습니다.");
+    return;
+  }
+
+  navigator.clipboard.writeText(text);
+  alert("특약 복사 완료");
+}
+
+/* 초기화 */
+function resetAll(){
+  document.querySelectorAll(".chk").forEach(c=>c.checked=false);
+  out.innerHTML="";
+}
+
+</script>
+
+</body>
+</html>

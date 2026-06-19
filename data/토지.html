@@ -1,0 +1,288 @@
+```html
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>토지 매매 특약 선택기</title>
+
+<style>
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+font-family:'Malgun Gothic',sans-serif;
+display:flex;
+height:100vh;
+background:#fff;
+}
+
+.left{
+width:50%;
+overflow-y:scroll;
+padding:20px;
+background:#f5f5f5;
+border-right:2px solid #ddd;
+}
+
+.right{
+width:50%;
+padding:20px;
+display:flex;
+flex-direction:column;
+background:#111;
+}
+
+h1{
+margin-top:0;
+font-size:40px;
+color:#0077aa;
+}
+
+h2{
+background:#e9e9e9;
+padding:10px;
+border-radius:8px;
+font-size:25px;
+margin-top:18px;
+color:#111;
+}
+
+.option{
+background:#fff;
+border:1px solid #ddd;
+border-radius:8px;
+padding:10px;
+margin-bottom:8px;
+}
+
+.option.checked{
+background:#c8f1ff;
+border:2px solid #00a2d8;
+}
+
+label{
+display:flex;
+gap:10px;
+font-size:23px;
+line-height:1.4;
+cursor:pointer;
+color:#111;
+}
+
+input{
+transform:scale(1.2);
+margin-top:3px;
+}
+
+#result{
+flex:1;
+background:#000;
+color:#fff;
+padding:18px;
+border-radius:10px;
+white-space:pre-wrap;
+overflow-y:auto;
+font-size:23px;
+
+/* ↓↓↓ 여기 수정해서 결과창 문항 간격 줄임 ↓↓↓ */
+line-height:1.5;
+letter-spacing:-0.3px;
+}
+
+.buttons{
+display:flex;
+gap:10px;
+margin-top:10px;
+}
+
+button{
+flex:1;
+padding:12px;
+border:none;
+border-radius:8px;
+font-size:15px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.copy{
+background:#00c853;
+color:#fff;
+}
+
+.print{
+background:#2962ff;
+color:#fff;
+}
+</style>
+</head>
+
+<body>
+
+<div class="left">
+
+<h1> 보성부동산 토지 특약 </h1>
+
+<<h2>1. 현황 및 권리관계 특약</h2>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="본 토지는 현 시설 및 현황 상태 그대로의 계약이며, 매수인은 현장답사 및 공부 확인 후 계약한다.">본 토지는 현 시설 및 현황 상태 그대로의 계약이며, 매수인은 현장답사 및 공부 확인 후 계약한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="계약일 현재 공부상 및 등기사항전부증명서상 이상 없는 상태에서 계약하며, 매도인은 잔금일까지 목적물을 현 상태대로 유지·보존 후 인도하기로 한다.">계약일 현재 공부상 및 등기사항전부증명서상 이상 없는 상태에서 계약하며, 매도인은 잔금일까지 목적물을 현 상태대로 유지·보존 후 인도하기로 한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="매도인은 잔금일 이전까지 본 부동산에 설정된 근저당권 등 일체의 담보권을 말소하여야 하며, 부득이 잔금일과 동시에 말소하는 경우에는 잔금 수령과 동시에 말소에 필요한 서류 일체를 매수인에게 제공하고 소유권 이전에 지장이 없도록 하여야 한다.">매도인은 잔금일 이전까지 본 부동산에 설정된 근저당권 등 일체의 담보권을 말소하여야 하며, 부득이 잔금일과 동시에 말소하는 경우에는 잔금 수령과 동시에 말소에 필요한 서류 일체를 매수인에게 제공하고 소유권 이전에 지장이 없도록 하여야 한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="매도인은 잔금일 이전까지 본 부동산에 설정된 근저당권을 말소하여야 하며, 부득이 잔금일과 동시에 말소하는 경우에는 잔금 수령과 동시에 말소에 필요한 서류 일체를 매수인에게 제공하고 소유권 이전에 지장이 없도록 하여야 한다.">매도인은 잔금일 이전까지 본 부동산에 설정된 근저당권을 말소하여야 하며, 부득이 잔금일과 동시에 말소하는 경우에는 잔금 수령과 동시에 말소에 필요한 서류 일체를 매수인에게 제공하고 소유권 이전에 지장이 없도록 하여야 한다..</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="제3자의 권리 주장 발생 시 매도인이 책임지고 해결한다.">제3자의 권리 주장 발생 시 매도인이 책임지고 해결한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="유치권, 법정지상권, 점유권 등의 문제 발생 시 매도인이 책임진다.">유치권, 법정지상권, 점유권 등의 문제 발생 시 매도인이 책임진다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="공부상 면적과 현황 면적 차이가 있을 경우 상호 협의하여 정산한다.">공부상 면적과 현황 면적 차이가 있을 경우 상호 협의하여 정산한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="본 토지는 공부상 면적을 기준으로 거래하며 추후 면적 차이에 대해 상호 이의를 제기하지 않는다.">본 토지는 공부상 면적을 기준으로 거래하며 추후 면적 차이에 대해 상호 이의를 제기하지 않는다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="잔금 전 경계 분쟁 발생 시 매도인이 책임지고 해결 후 인도한다.">잔금 전 경계 분쟁 발생 시 매도인이 책임지고 해결 후 인도한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="잔금 전 인접 토지와의 경계 침범 사항은 매도인이 해결 후 인도한다.">잔금 전 인접 토지와의 경계 침범 사항은 매도인이 해결 후 인도한다.</label></div>
+
+<h2>2. 도로 및 진입로 특약</h2>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="본 토지는 차량 진입 가능한 상태로 인도한다.">본 토지는 차량 진입 가능한 상태로 인도한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="진입도로 사용에 법적 문제가 없도록 매도인이 책임진다.">진입도로 사용에 법적 문제가 없도록 매도인이 책임진다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="사도 사용승낙 관련 사항은 매도인이 협조한다.">사도 사용승낙 관련 사항은 매도인이 협조한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="맹지 여부는 매수인이 확인 후 계약하며 추후 이의를 제기하지 않는다.">맹지 여부는 매수인이 확인 후 계약하며 추후 이의를 제기하지 않는다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="매수인은 현재 본 토지의 진입도로가 사도(私道)인 사실을 충분히 확인하고 이를 인지한 상태에서 계약한다. 다만, 잔금 이후 사도 소유자가 사도임을 이유로 통행 제한, 사용 승낙 거부 등으로 분쟁이 발생할 경우 매도인은 자신의 책임과 비용으로 이를 해결하여야 한다. 만약 원만한 해결이 이루어지지 않아 토지의 정상적인 사용 및 건축행위가 현저히 불가능한 경우, 매수인은 본 계약을 해제 또는 취소할 수 있으며, 매도인은 지급받은 매매대금을 즉시 매수인에게 반환하기로 한다.단, 본 특약에 따른 해제 또는 취소 권리는 잔금일로부터 6개월 이내에 행사하는 것으로 한다.
+">매수인은 현재 본 토지의 진입도로가 사도(私道)인 사실을 충분히 확인하고 이를 인지한 상태에서 계약한다. 다만, 잔금 이후 사도 소유자가 사도임을 이유로 통행 제한, 사용 승낙 거부 등으로 분쟁이 발생할 경우 매도인은 자신의 책임과 비용으로 이를 해결하여야 한다. 만약 원만한 해결이 이루어지지 않아 토지의 정상적인 사용 및 건축행위가 현저히 불가능한 경우, 매수인은 본 계약을 해제 또는 취소할 수 있으며, 매도인은 지급받은 매매대금을 즉시 매수인에게 반환하기로 한다.단, 본 특약에 따른 해제 또는 취소 권리는 잔금일로부터 6개월 이내에 행사하는 것으로 한다.
+</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="매수인은 현재 본 토지의 진입도로가 사도(私道)인 사실을 충분히 확인하고 이를 인지한 상태에서 계약한다. 다만, 해당 사도가 건축법상 도로로 인정되지 않아 건축허가가 불가한 경우에는 매수인은 계약을 해제할 수 있으며, 매도인은 수령한 매매대금을 즉시 반환하기로 한다.단, 본 특약에 따른 해제 또는 취소 권리는 잔금일로부터 6개월 이내에 행사하는 것으로 한다.">매수인은 현재 본 토지의 진입도로가 사도(私道)인 사실을 충분히 확인하고 이를 인지한 상태에서 계약한다. 다만, 해당 사도가 건축법상 도로로 인정되지 않아 건축허가가 불가한 경우에는 매수인은 계약을 해제할 수 있으며, 매도인은 수령한 매매대금을 즉시 반환하기로 한다.단, 본 특약에 따른 해제 또는 취소 권리는 잔금일로부터 6개월 이내에 행사하는 것으로 한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="매수인은 본 토지가 맹지인 사실과 도로 미확보 상태를 충분히 확인하고 이를 인지한 상태에서 계약하며, 향후 건축허가 불가, 건축 제한, 진입도로 미확보 등의 사유가 발생하더라도 이를 이유로 계약의 해제, 취소 또는 손해배상을 청구할 수 없다.">매수인은 본 토지가 맹지인 사실과 도로 미확보 상태를 충분히 확인하고 이를 인지한 상태에서 계약하며, 향후 건축허가 불가, 건축 제한, 진입도로 미확보 등의 사유가 발생하더라도 이를 이유로 계약의 해제, 취소 또는 손해배상을 청구할 수 없다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="매수인은 본 토지의 현황 및 진입도로 상황(공도, 사도, 지적도상 도로 여부 등)을 직접 확인하고 이를 충분히 인지한 상태에서 계약한다.">매수인은 본 토지의 현황 및 진입도로 상황(공도, 사도, 지적도상 도로 여부 등)을 직접 확인하고 이를 충분히 인지한 상태에서 계약한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="매수인은 본 토지가 맹지이거나 도로 미확보 상태일 수 있음을 확인하고 계약하며, 향후 진입도로 미확보로 인한 건축허가 불가 또는 이용 제한을 이유로 매도인에게 계약 해제, 손해배상 등을 청구하지 않는다.">매수인은 본 토지가 맹지이거나 도로 미확보 상태일 수 있음을 확인하고 계약하며, 향후 진입도로 미확보로 인한 건축허가 불가 또는 이용 제한을 이유로 매도인에게 계약 해제, 손해배상 등을 청구하지 않는다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="매수인은 본 토지의 진입도로가 사도임을 확인하고 계약한다.
+다만 잔금 이후 사도 소유자 또는 이해관계인으로부터 통행 제한, 통행료 요구, 사용 승낙 거부 등의 문제가 발생하지 않도록 매도인은 통상적인 범위 내에서 협조하여야 한다.">매수인은 본 토지의 진입도로가 사도임을 확인하고 계약한다.
+다만 잔금 이후 사도 소유자 또는 이해관계인으로부터 통행 제한, 통행료 요구, 사용 승낙 거부 등의 문제가 발생하지 않도록 매도인은 통상적인 범위 내에서 협조하여야 한다</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="본 토지는 진입도로가 사도 또는 미확보 상태일 수 있으며, 건축법상 도로로 인정되지 않아 건축허가가 불가한 경우에는 매수인은 계약을 해제할 수 있고, 매도인은 수령한 매매대금을 즉시 반환하기로 한다.본 특약에 따른 해제 또는 취소 권리는 잔금일로부터 6개월 이내에 행사하는 것으로 한다.
+">본 토지는 진입도로가 사도 또는 미확보 상태일 수 있으며, 건축법상 도로로 인정되지 않아 건축허가가 불가한 경우에는 매수인은 계약을 해제할 수 있고, 매도인은 수령한 매매대금을 즉시 반환하기로 한다.본 특약에 따른 해제 또는 취소 권리는 잔금일로부터 6개월 이내에 행사하는 것으로 한다.
+</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="매수인은 본 토지의 진입도로가 사도임을 확인하고 계약한다.
+잔금 이후 사도 소유자와의 통행권 분쟁 또는 권리 문제 발생 시 매도인은 이를 해결하기 위해 성실히 협조하며, 해결이 불가능하여 토지의 사용 또는 건축이 현저히 제한되는 경우 매수인은 계약을 해제할 수 있고 매도인은 매매대금을 즉시 반환한다.본 특약에 따른 해제 또는 취소 권리는 잔금일로부터 6개월 이내에 행사하는 것으로 한다.
+">매수인은 본 토지의 진입도로가 사도임을 확인하고 계약한다.
+잔금 이후 사도 소유자와의 통행권 분쟁 또는 권리 문제 발생 시 매도인은 이를 해결하기 위해 성실히 협조하며, 해결이 불가능하여 토지의 사용 또는 건축이 현저히 제한되는 경우 매수인은 계약을 해제할 수 있고 매도인은 매매대금을 즉시 반환한다.본 특약에 따른 해제 또는 취소 권리는 잔금일로부터 6개월 이내에 행사하는 것으로 한다.
+</label></div>
+
+
+<h2>3. 건축 및 개발행위 특약</h2>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="건축허가 불가 시 본 계약은 무효로 하며 계약금은 반환한다.">건축허가 불가 시 본 계약은 무효로 하며 계약금은 반환한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="개발행위허가 불가 시 계약을 해제할 수 없다.">개발행위허가 불가 시 계약을 해제할 수 없다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="토지이용계획확인서상 규제사항은 매수인이 확인 후 계약한다.">토지이용계획확인서상 규제사항은 매수인이 확인 후 계약한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="건폐율, 용적률, 높이 제한 등은 매수인이 확인 후 계약한다.">건폐율, 용적률, 높이 제한 등은 매수인이 확인 후 계약한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="상수도, 오수, 전기 인입 가능 여부는 매수인이 확인 후 계약한다.">상수도, 오수, 전기 인입 가능 여부는 매수인이 확인 후 계약한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="문화재보호구역, 군사시설보호구역 등 제한사항은 매수인이 확인 후 계약한다.">문화재보호구역, 군사시설보호구역 등 제한사항은 매수인이 확인 후 계약한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="지목변경 가능 여부는 매수인이 확인 후 계약한다.">지목변경 가능 여부는 매수인이 확인 후 계약한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="개발부담금 발생 시 매수인이 부담한다.">개발부담금 발생 시 매수인이 부담한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="형질변경 및 성토·절토 비용은 매수인이 부담한다.">형질변경 및 성토·절토 비용은 매수인이 부담한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="건축 인허가 관련 서류 요청 시 매도인은 적극 협조한다.">건축 인허가 관련 서류 요청 시 매도인은 적극 협조한다.</label></div>
+
+<h2>4. 농지 특약</h2>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="농지취득자격증명 미발급 시 본 계약은 무효로 한다.">농지취득자격증명 미발급 시 본 계약은 무효로 한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="농지전용허가 불가 시 계약을 해제하며 계약금은 반환한다.">농지전용허가 불가 시 계약을 해제하며 계약금은 반환한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="농업진흥구역 여부는 매수인이 확인 후 계약한다.">농업진흥구역 여부는 매수인이 확인 후 계약한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="경작 중인 농작물은 수확 후 인도한다.">경작 중인 농작물은 수확 후 인도한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="농업보조금 관련 문제는 매도인이 책임진다.">농업보조금 관련 문제는 매도인이 책임진다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="실제 경작자와 관련한 민원은 매도인이 해결한다.">실제 경작자와 관련한 민원은 매도인이 해결한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="농지법 위반 사항 발생 시 매도인이 책임진다.">농지법 위반 사항 발생 시 매도인이 책임진다.</label></div>
+
+<h2>5. 임야 특약</h2>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="분묘 발견 시 매도인이 이전 완료 후 인도한다.">분묘 발견 시 매도인이 이전 완료 후 인도한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="산지전용허가 가능 여부는 매수인이 확인 후 계약한다.">산지전용허가 가능 여부는 매수인이 확인 후 계약한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="임야 내 수목 처분은 별도 협의한다.">임야 내 수목 처분은 별도 협의한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="토석 채취 제한 여부는 매수인이 확인 후 계약한다.">토석 채취 제한 여부는 매수인이 확인 후 계약한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="산사태 위험지역 여부는 매수인이 확인 후 계약한다.">산사태 위험지역 여부는 매수인이 확인 후 계약한다.</label></div>
+
+<h2>6. 분묘 및 지장물 특약</h2>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="토지 내 분묘는 잔금일까지 매도인 책임으로 이전 완료한다.">토지 내 분묘는 잔금일까지 매도인 책임으로 이전 완료한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="무연고 분묘 발생 시 매도인이 처리 책임을 진다.">무연고 분묘 발생 시 매도인이 처리 책임을 진다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="컨테이너, 비닐하우스, 폐기물 등 지장물은 잔금 전 철거한다.">컨테이너, 비닐하우스, 폐기물 등 지장물은 잔금 전 철거한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="지상 시설물 철거 비용은 매도인이 부담한다.">지상 시설물 철거 비용은 매도인이 부담한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="폐기물 매립 사실 발견 시 매도인이 처리한다.">폐기물 매립 사실 발견 시 매도인이 처리한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="토지 내 불법 구조물은 매도인이 원상복구 후 인도한다.">토지 내 불법 구조물은 매도인이 원상복구 후 인도한다.</label></div>
+
+<h2>7. 토양 및 환경 특약</h2>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="토양오염 사실 발견 시 매도인이 책임진다.">토양오염 사실 발견 시 매도인이 책임진다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="산업폐기물 매립 발견 시 계약을 해제할 수 있다.">산업폐기물 매립 발견 시 계약을 해제할 수 있다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="문화재 발견으로 개발 제한 시 상호 협의 후 계약을 해제할 수 있다.">문화재 발견으로 개발 제한 시 상호 협의 후 계약을 해제할 수 있다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="침수지역 여부는 매수인이 확인 후 계약한다.">침수지역 여부는 매수인이 확인 후 계약한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="연약지반 및 지반 침하 문제는 매수인이 확인 후 계약한다.">연약지반 및 지반 침하 문제는 매수인이 확인 후 계약한다.</label></div>
+
+<h2>8. 임차인 및 점유 특약</h2>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="현 점유자는 잔금일까지 명도 완료한다.">현 점유자는 잔금일까지 명도 완료한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="임차인 보증금 반환 문제는 매도인이 책임진다.">임차인 보증금 반환 문제는 매도인이 책임진다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="무단 점유 발생 시 매도인이 해결한다.">무단 점유 발생 시 매도인이 해결한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="경작인 관련 민원은 매도인이 책임진다.">경작인 관련 민원은 매도인이 책임진다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="잔금일까지 완전한 인도 상태로 이전한다.">잔금일까지 완전한 인도 상태로 이전한다.</label></div>
+
+<h2>9. 세금 및 비용 특약</h2>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="계약일 이전 발생한 재산세는 매도인이 부담한다.">계약일 이전 발생한 재산세는 매도인이 부담한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="잔금일 이후 발생하는 제세공과금은 매수인이 부담한다.">잔금일 이후 발생하는 제세공과금은 매수인이 부담한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="양도소득세는 매도인이 부담한다.">양도소득세는 매도인이 부담한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="취득세 및 등기비용은 매수인이 부담한다.">취득세 및 등기비용은 매수인이 부담한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="잔금전 측량이 필요 할 경우 비용 부담은 공동으로 한다.">잔금전 측량이 필요 할 경우 비용 부담은 공동으로 한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="개발부담금 및 기반시설부담금은 책임은 매수인이다.">개발부담금 및 기반시설부담금은 책임은 매수인이다.</label></div>
+
+<h2>10. 계약해제 및 위약 특약</h2>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="계약 불이행 시 민법상 계약금 배액배상 원칙을 따른다.">계약 불이행 시 민법상 계약금 배액배상 원칙을 따른다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="매수인 귀책으로 계약해제 시 계약금은 위약금으로 본다.">매수인 귀책으로 계약해제 시 계약금은 위약금으로 본다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="매도인 귀책으로 계약해제 시 계약금의 배액을  반환한다.">매도인 귀책으로 계약해제 시 계약금의 배액을  반환한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="인허가 불가 시 상호 위약 없이 계약을 해제한다.">인허가 불가 시 상호 위약 없이 계약을 해제한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="천재지변 등 불가항력 사유 발생 시 상호 책임을 묻지 않는다.">천재지변 등 불가항력 사유 발생 시 상호 책임을 묻지 않는다.</label></div>
+
+<h2>11. 잔금 및 인도 특약</h2>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="잔금과 동시에 소유권 이전 서류를 교부한다.">잔금과 동시에 소유권 이전 서류를 교부한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="잔금 지급과 동시에 토지를 인도한다.">잔금 지급과 동시에 토지를 인도한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="매도인은 잔금일까지 토지를 동일 상태로 유지한다.">매도인은 잔금일까지 토지를 동일 상태로 유지한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="명도 지연 시 지연배상금을 지급한다.">명도 지연 시 지연배상금을 지급한다.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="첨부서류 : 중개대상물확인·설명서, 공제증서 사본 각 1부.
+">첨부서류 : 중개대상물확인·설명서, 공제증서 사본 각 1부.</label></div>
+<div class="option"><label><input type="checkbox" onchange="generate()" value="매도인 은행 계좌번호 0000-0000-000.">매도인 은행 계좌번호 0000-0000-000.</label></div>
+
+</div>
+
+<div class="right">
+<h1>선택 결과</h1>
+
+<div id="result">선택한 특약이 이곳에 표시됩니다.</div>
+
+<div class="buttons">
+<button class="copy" onclick="copyText()">복사</button>
+<button class="print" onclick="window.print()">인쇄</button>
+</div>
+</div>
+
+<script>
+function generate(){
+
+const checked=document.querySelectorAll('input[type=checkbox]:checked');
+const result=document.getElementById('result');
+
+let text='';
+
+/* ↓↓↓ 문항 간격 최소화 핵심 수정 ↓↓↓ */
+checked.forEach((el,i)=>{
+text+=(i+1)+'. '+el.value+'\n';
+});
+
+result.innerText=text || '선택한 특약이 이곳에 표시됩니다.';
+
+document.querySelectorAll('.option').forEach(o=>
+o.classList.remove('checked')
+);
+
+checked.forEach(el=>
+el.closest('.option').classList.add('checked')
+);
+
+}
+
+function copyText(){
+navigator.clipboard.writeText(
+document.getElementById('result').innerText
+);
+alert('복사 완료');
+}
+</script>
+
+</body>
+</html>
+```

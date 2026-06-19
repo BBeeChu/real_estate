@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>보성월세2</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:'Malgun Gothic',sans-serif;
+    background:#111;
+    color:#fff;
+    height:100vh;
+    overflow:hidden;
+}
+
+/* 헤더 */
+header{
+    background:#000;
+    padding:14px;
+    text-align:center;
+    font-size:40px;
+    font-weight:bold;
+    border-bottom:1px solid #333;
+}
+
+/* 전체 */
+.wrap{
+    display:flex;
+    height:calc(100vh - 60px);
+}
+
+/* 왼쪽 */
+.left{
+    width:50%;
+    overflow-y:auto;
+    padding:10px;
+    border-right:1px solid #333;
+    background:#181818;
+}
+
+/* 오른쪽 */
+.right{
+    width:50%;
+    padding:10px;
+    background:#101010;
+    display:flex;
+    flex-direction:column;
+}
+
+/* 특약 버튼 */
+.item{
+    background:#222;
+    margin-bottom:4px;
+    padding:6px 8px;
+    border-radius:6px;
+    cursor:pointer;
+    transition:0.2s;
+    font-size:23px;
+    line-height:1.2;
+    border:1px solid #333;
+}
+
+.item:hover{
+    background:#333;
+}
+
+.item.active{
+    background:#00a86b;
+    color:#fff;
+    border-color:#00d084;
+}
+
+/* 결과창 */
+#result{
+    flex:1;
+    overflow-y:auto;
+    background:#000;
+    border:1px solid #333;
+    border-radius:8px;
+    padding:6px;
+    font-size:23px;
+    line-height:1.15;
+}
+
+/* 결과 항목 간격 완전 축소 */
+.result-item{
+    display:flex;
+    align-items:flex-start;
+    gap:6px;
+    margin:0 !important;
+    padding:1px 0 !important;
+    line-height:1.15 !important;
+    border-bottom:1px solid #1d1d1d;
+}
+
+/* 순번 */
+.num{
+    min-width:34px;
+    color:#00d084;
+    font-weight:bold;
+}
+
+/* 문장 */
+.txt{
+    flex:1;
+}
+
+/* 복사 버튼 */
+.copy-btn{
+    margin-top:8px;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    background:#00a86b;
+    color:#fff;
+    font-size:23px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.copy-btn:hover{
+    background:#00c27b;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+보성월세2
+</header>
+
+<div class="wrap">
+
+    <!-- 왼쪽 -->
+    <div class="left" id="list"></div>
+
+    <!-- 오른쪽 -->
+    <div class="right">
+
+        <div id="result"></div>
+
+        <button class="copy-btn" onclick="copyText()">
+            특약 복사
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+const items = [
+  
+"본 주택의 임대차에 관한 중개대상물확인·설명서 및 계약서상의 시설물 상태는 임대인이 고지한 사항과 임차인 및 공인중개사의 현장 확인 사항을 기초로 한 것이다.",
+
+"현 시설 상태 그대로 임대하며 임차인은 현장을 확인 후 계약한다.",
+  
+"중개대상물 확인설명서를 충분히 설명 듣고 계약한다.",
+  
+"임대인은 계약일 현재의 등기부등본상 권리관계를 임차인의 전입신고 및 확정일자 완료시까지 변동 없이 유지한다..",
+  
+"계약 체결 이후 단순 변심에 의한 계약 해제는 불가하다.",
+  
+"임차인은 계약 전 등기사항 및 현장 상태를 확인 후 계약한다.",
+  
+"임차인은 실입주 목적으로 계약하며 전대는 불가하다.",
+
+"임차인의 고의·과실로 발생한 시설물 파손은 임차인 부담으로 한다.",
+  
+"자연 마모 및 노후로 인한 시설 고장은 임대인 부담으로 한다.",
+  
+"경미한 소모품 고장으로  교체 비용은 임차인 부담으로 한다.",
+  
+"전구및 전등관련 부속품•수도관련 부속•화장내 부속품•문손잡이등 경미한 품목 수선은 임차인 부담으로 한다.",
+  
+"옵션 품목(에어컨, 냉장고, 세탁기, 가스레인지, 인덕션, 전자도어락, 전등교체와 전기배선 ),보일러,수도관, 전기는 계약 체결 당시 정상 작동 상태로 인도하며, 자연적인 고장 발생 시 임대인이 수리 또는 교체한다.",
+
+"보일러 이상 발생 시 임차인은 즉시 임대인에게 통보한다.",
+
+"옵션 가전은 무상 제공으로 고장 시 임대인이 수리한다.",
+  
+"옵션 가전은 무상 제공으로 고장 시 임차인이 수리한다.",
+
+"입주 청소는 임차인 부담으로 한다.",
+  
+"반려동물 사육은 임대인 동의 시 가능하다.",
+  
+"반려동물로 인한 냄새·훼손 발생 시 임차인이 원상복구한다.",
+  
+"실내 흡연은 금지한다.",
+  
+"실내 흡연으로 인한 오염 및 냄새 제거 비용은 임차인 부담이다.",
+  
+"월세 2회 이상 연체 시 임대인은 계약 해지를 요구할 수 있다.",
+
+"누수 발생 시 임차인은 즉시 임대인에게 통보한다.",
+  
+"건물 노후로 인한 결로 및 곰팡이는 일부 발생할 수 있음을 확인한다.",
+  
+"발코니 확장 상태를 임차인이 확인 후 계약한다.",
+  
+"불법 구조 변경 부분은 임차인이 확인 후 계약한다.",
+  
+"임차인은 퇴거 시 폐기물 및 짐을 모두 처리 후 인도한다.",
+ 
+"중도 퇴실 시 신규 임차인 주선 전까지 월세를 부담한다.",
+  
+"중도 퇴실 시 신규 임차인과 계약시 중개수수료를 부담한다.",
+   
+"천재지변으로 인한 손해는 상호 책임을 묻지 않는다.",
+  
+"임차인은 소음 및 민원 발생 행위를 하지 않는다.",
+
+"불법 용도 변경 및 불법 행위 적발 시 계약 해지 사유로 한다.",
+  
+"전기·가스요금은 임차인 명의로 이전하여 사용한다.",
+  
+"입주 후 하자 발견 시 즉시 통보하며 통보 없는 사용은 이상 없는 것으로 본다.",
+
+"임대 목적물의 누수, 결로, 곰팡이 하자는 임대인이 수리한다.",
+
+"잔금일 이후 발생한 소모성 하자는 임차인 부담으로 한다.",
+
+"퇴실 청소가 미흡할 경우 청소비를 공제할 수 있다.",  
+
+"임차인은 퇴실 시 청소비 ㅇ만원를 부담한다.",
+  
+"월세는 매월 지정일에 임대인 계좌로 지급한다.", 
+  
+"월세 2회 이상 연체 시 임대인은 계약 해지를 요구할 수 있다.",
+  
+"임차인은 시설물을 선량한 관리자로서 사용한다.",
+
+"임차인은 주민등록 전입신고는 이사후 14 일 이내, 확정일자는 가급적 빠르게 신청한다.",
+
+"전입신고 및 확정일자는 임차인의 자유로 한다.",
+
+"계약 만료 2개월 전 상호 퇴거 여부를 협의한다.",
+
+"임차인은 계약 종료 시 원상복구 후 반환한다.",
+  
+"계약 종료 시 체납 공과금 정산 후 보증금을 반환한다.",  
+  
+"특약에 명시되지 않은 사항은 주택임대차보호법 및 민법에 따른다.",
+  
+  
+  
+"🏚️🏚️🏚️월세정리🏚️🏚️🏚️",
+  
+  
+  
+"현 시설 상태를 임대인·임차인·공인중개사가 함께 확인 후 계약한다.",
+  
+"임대인은 계약 체결일 현재 등기사항전부증명서상 권리관계를 임차인의 전입신고 및 확정일자 완료 시까지 유지한다.",
+  
+"월세에 포함되는 항목(공용전기, 청소비, 인터넷 )과 별도 개인 부담 항목(전기, 수도, 가스)은 현 상태 기준으로 한다.",
+  
+"임대 목적물의 누수, 결로, 보일러, 수도, 전기, 난방 및 기타 주요 시설의 하자에 대한 수리·교체 비용은 임대인이 부담한다.",
+  
+"사용 중 발생하는 전구, 수도꼭지, 샤워기, 문손잡이, 도어락 건전지 등 경미한 소모품 교체는 임차인이 부담한다.",
+  
+"임차인의 고의 또는 과실로 발생한 손해 및 하자는 임차인이 원상복구 및 비용을 부담한다.", 
+  
+"계약 종료 시 임차인은 통상적인 사용에 따른 마모를 제외하고 원상복구 후 명도하기로 한다.",
+  
+"임차인의 사정으로 중도 퇴실할 경우 신규 임차인 주선 시까지의 월세 및 신규 계약 중개수수료는 임차인이 부담한다.",
+  
+
+"반려동물 사육 및 실내 흡연 여부는 임대인과 사전 협의 후 가능하며, 위반 시 원상복구 비용은 임차인이 부담한다.",
+  
+"옵션으로 제공되는 에어컨, 냉장고, 세탁기 등은 현 상태 기준으로 인도한다.",
+  
+"임차인은 계약 종료 2개월 전까지 재계약 여부 및 퇴실 의사를 임대인에게 통보하기로 한다.",
+
+"천재지변 및 건물 노후로 인한 하자는 임대인의 고의·과실이 없는 한 별도 협의하여 처리한다.",
+  
+"퇴실 청소가 미흡할 경우 청소비를 공제할 수 있다.",
+  
+"실내 흡연으로 인한 오염 및 냄새 제거 비용은 임차인 부담이다.",
+
+"임차인은 퇴실 시 청소비 ㅇ만원를 부담한다.",
+  
+"임차인은 실입주 목적으로 계약하며 전대는 불가하다.",
+  
+"월세는 매월 지정일에 임대인 계좌로 지급한다.", 
+  
+"월세 2회 이상 연체 시 임대인은 계약 해지를 요구할 수 있다.",
+  
+"임차인은 주민등록 전입신고는 이사후 14 일 이내, 확정일자는 가급적 빠르게 신청한다.", 
+  
+"특약에 명시되지 않은 사항은 주택임대차보호법 및 민법에 따른다.",
+  
+"도시가스 개통은 영남에너지 (054-285-0852).",
+
+"전기요금 영수증 명의변경은 한전(054-123).",
+
+"첨부서류 : 중개대상물확인·설명서, 공제증서 사본 각 1부.",
+
+"임대인 은행 계좌번호:000000000.",
+
+];
+
+const list = document.getElementById("list");
+const result = document.getElementById("result");
+
+let selected = [];
+
+items.forEach(text=>{
+
+    const div=document.createElement("div");
+    div.className="item";
+    div.innerText=text;
+
+    div.onclick=()=>{
+
+        if(div.classList.contains("active")){
+
+            div.classList.remove("active");
+            selected=selected.filter(v=>v!==text);
+
+        }else{
+
+            div.classList.add("active");
+            selected.push(text);
+
+        }
+
+        renderResult();
+    };
+
+    list.appendChild(div);
+
+});
+
+function renderResult(){
+
+    result.innerHTML="";
+
+    selected.forEach((text,index)=>{
+
+        result.innerHTML += `
+            <div class="result-item">
+
+                <div class="num">
+                    ${index + 1}.
+                </div>
+
+                <div class="txt">
+                    ${text}
+                </div>
+
+            </div>
+        `;
+
+    });
+
+}
+
+function copyText(){
+
+    let text = selected.map((v,i)=>`${i+1}. ${v}`).join("\n");
+
+    navigator.clipboard.writeText(text);
+
+    alert("복사 완료");
+
+}
+
+</script>
+
+</body>
+</html>
+```
