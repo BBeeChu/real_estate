@@ -97,223 +97,109 @@ def category_for(title: str, source_name: str) -> str:
     return "기타"
 
 
-def custom_clause_panel(page_id: str) -> str:
+def page_enhancement(page_id: str, title: str, is_precontract: bool) -> str:
     encoded = json.dumps(page_id, ensure_ascii=False)
-    return f"""
-<style>
-  #re-custom-panel {{
-    position: fixed;
-    left: 50%;
-    bottom: 16px;
-    transform: translateX(-50%);
-    z-index: 2147483647;
-    width: min(520px, calc(100vw - 32px));
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    color: #111827;
-  }}
-  #re-custom-panel details {{
-    border: 1px solid #cfd8e3;
-    border-radius: 10px;
-    background: #ffffff;
-    box-shadow: 0 12px 30px rgba(15, 23, 42, .18);
-    overflow: hidden;
-  }}
-  #re-custom-panel summary {{
-    cursor: pointer;
-    padding: 12px 14px;
-    font-weight: 800;
-    background: #1f6feb;
-    color: white;
-    user-select: none;
-  }}
-  #re-custom-panel .body {{
-    padding: 12px;
-    display: grid;
-    gap: 8px;
-  }}
-  #re-custom-panel textarea {{
-    width: 100%;
-    min-height: 78px;
-    resize: vertical;
-    border: 1px solid #cfd8e3;
-    border-radius: 8px;
-    padding: 9px;
-    font: inherit;
-  }}
-  #re-custom-panel button {{
-    border: 1px solid #cfd8e3;
-    background: #ffffff;
-    border-radius: 8px;
-    padding: 8px 10px;
-    cursor: pointer;
-    font-weight: 700;
-  }}
-  #re-custom-panel button.primary {{
-    background: #1f6feb;
-    border-color: #1f6feb;
-    color: white;
-  }}
-  #re-custom-panel .actions {{
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }}
-  #re-action-dock {{
-    position: fixed;
-    right: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 2147483647;
-    width: 132px;
-    display: grid;
-    gap: 8px;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  }}
-  #re-action-dock button {{
-    border: 1px solid #cfd8e3;
-    background: #ffffff;
-    color: #111827;
-    border-radius: 10px;
-    padding: 10px 12px;
-    cursor: pointer;
-    font-weight: 800;
-    box-shadow: 0 8px 22px rgba(15, 23, 42, .14);
-  }}
-  #re-action-dock button.primary {{
-    background: #1f6feb;
-    border-color: #1f6feb;
-    color: white;
-  }}
-  #re-custom-panel .list {{
-    max-height: 180px;
-    overflow: auto;
-    display: grid;
-    gap: 6px;
-  }}
-  #re-custom-panel .item {{
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 8px;
-    background: #f9fafb;
-    line-height: 1.45;
-  }}
-  #re-custom-panel .item-row {{
-    display: flex;
-    justify-content: space-between;
-    gap: 8px;
-    align-items: flex-start;
-  }}
-  #re-custom-panel .delete {{
-    color: #b42318;
-    padding: 4px 7px;
-    flex: 0 0 auto;
-  }}
-  @media print {{
-    #re-custom-panel,
-    #re-action-dock {{ display: none; }}
-  }}
-  @media (max-width: 760px) {{
-    #re-custom-panel {{
-      left: 12px;
-      right: 12px;
-      bottom: 12px;
-      transform: none;
-      width: auto;
-    }}
-    #re-action-dock {{
-      right: 12px;
-      top: 12px;
-      transform: none;
-      width: auto;
-      grid-template-columns: repeat(3, auto);
-    }}
-  }}
-</style>
-<div id="re-custom-panel">
-  <details>
-    <summary>내 문구 추가</summary>
-    <div class="body">
-      <textarea id="re-custom-input" placeholder="이 HTML에만 저장할 문구를 입력하세요."></textarea>
-      <div class="actions">
-        <button class="primary" id="re-custom-add" type="button">추가</button>
-        <button id="re-custom-clear" type="button">전체 삭제</button>
-      </div>
-      <div class="list" id="re-custom-list"></div>
-    </div>
-  </details>
-</div>
-<div id="re-action-dock" aria-label="문서 작업">
-  <button class="primary" id="re-copy-doc" type="button">복사</button>
-  <button id="re-print-doc" type="button">인쇄</button>
-  <button id="re-save-doc" type="button">파일 저장</button>
-</div>
+    title_encoded = json.dumps(title, ensure_ascii=False)
+    if is_precontract:
+        return f"""
 <script>
 (function () {{
+  const sharedKey = "realEstateSelectedClauses";
   const pageId = {encoded};
-  const key = "realEstateCustomClauses:" + pageId;
-  const input = document.getElementById("re-custom-input");
-  const list = document.getElementById("re-custom-list");
-  const add = document.getElementById("re-custom-add");
-  const clear = document.getElementById("re-custom-clear");
-  const copyDoc = document.getElementById("re-copy-doc");
-  const printDoc = document.getElementById("re-print-doc");
-  const saveDoc = document.getElementById("re-save-doc");
 
-  function read() {{
+  function sharedClauses() {{
     try {{
-      const value = JSON.parse(localStorage.getItem(key) || "[]");
-      return Array.isArray(value) ? value : [];
+      const stored = JSON.parse(localStorage.getItem(sharedKey) || "{{}}");
+      return Object.entries(stored)
+        .filter(([id]) => id !== pageId)
+        .flatMap(([, entry]) => Array.isArray(entry.clauses) ? entry.clauses : [])
+        .map(value => String(value).trim())
+        .filter(Boolean)
+        .filter((value, index, values) => values.indexOf(value) === index);
     }} catch (error) {{
       return [];
     }}
   }}
 
-  function write(values) {{
-    localStorage.setItem(key, JSON.stringify(values));
+  function appendSharedClauses() {{
+    const result = document.getElementById("result");
+    if (!result) return;
+    const clauses = sharedClauses();
+    let text = result.value || "";
+    text = text.replace(/\\n\\[다른 섹션 선택 특약\\][\\s\\S]*?(?=\\n\\n보성공인중개사사무소:|\\n보성공인중개사사무소:|$)/, "");
+    if (clauses.length) {{
+      text = text.replace("- 특약 선택 없음\\n", "");
+      const block = "\\n[다른 섹션 선택 특약]\\n" + clauses.map((clause, index) => `${{index + 1}}. ${{clause}}`).join("\\n");
+      text = text.replace(/\\n\\n보성공인중개사사무소:/, block + "\\n\\n보성공인중개사사무소:");
+      if (text.indexOf(block) === -1) text += "\\n" + block;
+    }}
+    result.value = text;
   }}
 
-  function render() {{
-    const values = read();
-    list.innerHTML = "";
-    if (!values.length) {{
-      list.innerHTML = '<div style="color:#6b7280;font-size:13px;">아직 추가한 문구가 없습니다.</div>';
+  function installGenerateHook() {{
+    if (typeof generateText === "function" && !generateText.__realEstateSharedHook) {{
+      const original = generateText;
+      generateText = function () {{
+        original.apply(this, arguments);
+        appendSharedClauses();
+      }};
+      generateText.__realEstateSharedHook = true;
+      generateText();
+      return true;
+    }}
+    appendSharedClauses();
+    return false;
+  }}
+
+  function downloadContract() {{
+    const result = document.getElementById("result");
+    const text = result && result.value ? result.value.trim() : "";
+    if (!text) {{
+      alert("다운로드할 가계약서 문구가 없습니다.");
       return;
     }}
-    values.forEach((value, index) => {{
-      const row = document.createElement("div");
-      row.className = "item";
-      row.innerHTML = '<div class="item-row"><div>' + (index + 1) + '. ' + escapeHtml(value) + '</div><button class="delete" type="button">삭제</button></div>';
-      row.querySelector("button").addEventListener("click", () => {{
-        const next = read().filter((_, itemIndex) => itemIndex !== index);
-        write(next);
-        render();
-      }});
-      list.appendChild(row);
-    }});
+    const blob = new Blob([text], {{ type: "text/plain;charset=utf-8" }});
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "가계약서.txt";
+    document.body.appendChild(link);
+    link.click();
+    URL.revokeObjectURL(link.href);
+    link.remove();
   }}
 
-  function escapeHtml(value) {{
-    return String(value).replace(/[&<>"']/g, char => ({{
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;"
-    }}[char]));
+  function addDownloadButton() {{
+    if (document.getElementById("re-download-precontract")) return;
+    const group = document.querySelector(".btn-group");
+    if (!group) return;
+    const button = document.createElement("button");
+    button.id = "re-download-precontract";
+    button.className = "copy-btn";
+    button.type = "button";
+    button.textContent = "💾 다운로드";
+    button.addEventListener("click", downloadContract);
+    group.insertBefore(button, group.children[2] || null);
   }}
 
-  add.addEventListener("click", () => {{
-    const value = input.value.trim();
-    if (!value) {{
-      alert("추가할 문구를 입력하세요.");
-      return;
-    }}
-    const values = read();
-    values.push(value);
-    write(values);
-    input.value = "";
-    render();
+  window.addEventListener("storage", event => {{
+    if (event.key === sharedKey) appendSharedClauses();
   }});
+  window.addEventListener("message", event => {{
+    if (event.data && event.data.type === "realEstateClausesUpdated") appendSharedClauses();
+  }});
+
+  addDownloadButton();
+  installGenerateHook();
+}}());
+</script>
+"""
+
+    return f"""
+<script>
+(function () {{
+  const pageId = {encoded};
+  const pageTitle = {title_encoded};
+  const sharedKey = "realEstateSelectedClauses";
 
   function selectedOptionText() {{
     const values = [];
@@ -322,91 +208,43 @@ def custom_clause_panel(page_id: str) -> str:
       values.push(input.value || (label ? label.innerText : ""));
     }});
     document.querySelectorAll(".selected, .active").forEach((node) => {{
-      if (node.closest("#re-custom-panel") || node.closest("#re-action-dock")) return;
       values.push(node.innerText || node.textContent || "");
     }});
-    return values.map(value => value.trim()).filter(Boolean);
+    return values
+      .map(value => value.trim())
+      .filter(Boolean)
+      .filter((value, index, all) => all.indexOf(value) === index);
   }}
 
-  function primaryResultText() {{
-    const selectors = ["textarea#result", "#result", "#out", ".result", ".right"];
-    for (const selector of selectors) {{
-      const node = document.querySelector(selector);
-      if (!node || node.closest("#re-custom-panel") || node.closest("#re-action-dock")) continue;
-      const text = "value" in node ? node.value : node.innerText;
-      if (text && text.trim()) return text.trim();
-    }}
-    return "";
-  }}
-
-  function exportText() {{
-    const sections = [];
-    const resultText = primaryResultText();
-    if (resultText) sections.push(resultText);
+  function publishSelection() {{
     const selected = selectedOptionText();
-    if (!resultText && selected.length) {{
-      sections.push(selected.map((value, index) => `${{index + 1}}. ${{value}}`).join("\\n"));
+    let stored = {{}};
+    try {{
+      stored = JSON.parse(localStorage.getItem(sharedKey) || "{{}}");
+    }} catch (error) {{
+      stored = {{}};
     }}
-    const custom = read();
-    if (custom.length) {{
-      sections.push("[내 문구]\\n" + custom.map((value, index) => `${{index + 1}}. ${{value}}`).join("\\n"));
+    if (selected.length) {{
+      stored[pageId] = {{ title: pageTitle, clauses: selected }};
+    }} else {{
+      delete stored[pageId];
     }}
-    return sections.join("\\n\\n").trim();
+    localStorage.setItem(sharedKey, JSON.stringify(stored));
+    try {{
+      window.parent.postMessage({{ type: "realEstateClausesUpdated", pageId, clauses: selected }}, "*");
+    }} catch (error) {{}}
   }}
 
-  copyDoc.addEventListener("click", async () => {{
-    const text = exportText();
-    if (!text) {{
-      alert("복사할 문구가 없습니다.");
-      return;
-    }}
-    try {{
-      await navigator.clipboard.writeText(text);
-    }} catch (error) {{
-      const temp = document.createElement("textarea");
-      temp.value = text;
-      document.body.appendChild(temp);
-      temp.select();
-      document.execCommand("copy");
-      temp.remove();
-    }}
-    alert("복사 완료");
-  }});
-
-  printDoc.addEventListener("click", () => {{
-    window.print();
-  }});
-
-  saveDoc.addEventListener("click", () => {{
-    const text = exportText();
-    if (!text) {{
-      alert("저장할 문구가 없습니다.");
-      return;
-    }}
-    const blob = new Blob([text], {{ type: "text/plain;charset=utf-8" }});
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = pageId + "-문구.txt";
-    document.body.appendChild(link);
-    link.click();
-    URL.revokeObjectURL(link.href);
-    link.remove();
-  }});
-
-  clear.addEventListener("click", () => {{
-    if (!confirm("이 HTML에 추가한 문구를 모두 삭제할까요?")) return;
-    write([]);
-    render();
-  }});
-
-  render();
+  document.addEventListener("click", () => setTimeout(publishSelection, 0), true);
+  document.addEventListener("change", () => setTimeout(publishSelection, 0), true);
+  publishSelection();
 }}());
 </script>
 """
 
 
-def inject_panel(source: str, page_id: str) -> str:
-    panel = custom_clause_panel(page_id)
+def inject_enhancement(source: str, page_id: str, title: str, is_precontract: bool) -> str:
+    panel = page_enhancement(page_id, title, is_precontract)
     index = source.lower().rfind("</body>")
     if index != -1:
         return source[:index] + panel + "\n" + source[index:]
@@ -425,7 +263,11 @@ def build_pages() -> list[dict[str, str]]:
         title = display_title(path, source)
         page_id = f"{index:02d}-{slugify(source_name.removesuffix('.html'))}"
         page_file = f"{page_id}.html"
-        (PAGES_DIR / page_file).write_text(inject_panel(source, page_id), encoding="utf-8")
+        is_precontract = "가계약" in source_name
+        (PAGES_DIR / page_file).write_text(
+            inject_enhancement(source, page_id, title, is_precontract),
+            encoding="utf-8",
+        )
         tools.append(
             {
                 "id": page_id,
@@ -527,12 +369,6 @@ def app_html(tools: list[dict[str, str]]) -> str:
       color: #0b4fb3;
       font-weight: 800;
     }}
-    .source {{
-      margin-top: 3px;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 400;
-    }}
     main {{
       display: grid;
       grid-template-rows: auto minmax(0, 1fr);
@@ -602,7 +438,6 @@ def app_html(tools: list[dict[str, str]]) -> str:
       <div class="toolbar">
         <div>
           <div class="toolbar-title" id="activeTitle">-</div>
-          <div class="source" id="activeSource"></div>
         </div>
         <div class="actions">
           <a class="btn" id="openNew" target="_blank" rel="noopener">새 창</a>
@@ -622,7 +457,6 @@ def app_html(tools: list[dict[str, str]]) -> str:
     const menu = document.getElementById("menu");
     const frame = document.getElementById("pageFrame");
     const activeTitle = document.getElementById("activeTitle");
-    const activeSource = document.getElementById("activeSource");
     const openNew = document.getElementById("openNew");
 
     function activePage() {{
@@ -650,7 +484,7 @@ def app_html(tools: list[dict[str, str]]) -> str:
           const button = document.createElement("button");
           button.type = "button";
           button.className = "page-btn" + (page.id === state.activeId ? " active" : "");
-          button.innerHTML = `<div>${{escapeHtml(page.title)}}</div><div class="source">${{escapeHtml(page.source)}}</div>`;
+          button.innerHTML = `<div>${{escapeHtml(page.title)}}</div>`;
           button.addEventListener("click", () => openPage(page.id));
           menu.appendChild(button);
         }});
@@ -666,7 +500,6 @@ def app_html(tools: list[dict[str, str]]) -> str:
       location.hash = encodeURIComponent(page.id);
       frame.src = page.file;
       activeTitle.textContent = page.title;
-      activeSource.textContent = `원본: ${{page.source}}`;
       openNew.href = page.file;
       renderMenu();
     }}
@@ -719,8 +552,8 @@ python3 -m http.server 8766
 
 - 왼쪽 메뉴에서 원본 HTML 항목을 선택합니다.
 - 선택한 HTML은 iframe 안에서 독립적으로 실행됩니다.
-- 각 HTML 오른쪽 아래의 `내 문구 추가` 패널에서 해당 HTML에만 저장되는 문구를 추가할 수 있습니다.
-- 추가 문구는 브라우저 localStorage에 페이지별로 분리 저장됩니다.
+- 가계약 섹션을 제외한 다른 섹션에서 선택한 특약사항은 가계약서의 `가계약 문구 자동 생성` 특약사항에 자동으로 합산됩니다.
+- 가계약서 작성 후 `다운로드` 버튼으로 텍스트 파일을 저장할 수 있습니다.
 
 ## GitHub Pages 배포
 

@@ -303,220 +303,11 @@ function copyText(){
 </script>
 
 
-<style>
-  #re-custom-panel {
-    position: fixed;
-    left: 50%;
-    bottom: 16px;
-    transform: translateX(-50%);
-    z-index: 2147483647;
-    width: min(520px, calc(100vw - 32px));
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    color: #111827;
-  }
-  #re-custom-panel details {
-    border: 1px solid #cfd8e3;
-    border-radius: 10px;
-    background: #ffffff;
-    box-shadow: 0 12px 30px rgba(15, 23, 42, .18);
-    overflow: hidden;
-  }
-  #re-custom-panel summary {
-    cursor: pointer;
-    padding: 12px 14px;
-    font-weight: 800;
-    background: #1f6feb;
-    color: white;
-    user-select: none;
-  }
-  #re-custom-panel .body {
-    padding: 12px;
-    display: grid;
-    gap: 8px;
-  }
-  #re-custom-panel textarea {
-    width: 100%;
-    min-height: 78px;
-    resize: vertical;
-    border: 1px solid #cfd8e3;
-    border-radius: 8px;
-    padding: 9px;
-    font: inherit;
-  }
-  #re-custom-panel button {
-    border: 1px solid #cfd8e3;
-    background: #ffffff;
-    border-radius: 8px;
-    padding: 8px 10px;
-    cursor: pointer;
-    font-weight: 700;
-  }
-  #re-custom-panel button.primary {
-    background: #1f6feb;
-    border-color: #1f6feb;
-    color: white;
-  }
-  #re-custom-panel .actions {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  #re-action-dock {
-    position: fixed;
-    right: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 2147483647;
-    width: 132px;
-    display: grid;
-    gap: 8px;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  }
-  #re-action-dock button {
-    border: 1px solid #cfd8e3;
-    background: #ffffff;
-    color: #111827;
-    border-radius: 10px;
-    padding: 10px 12px;
-    cursor: pointer;
-    font-weight: 800;
-    box-shadow: 0 8px 22px rgba(15, 23, 42, .14);
-  }
-  #re-action-dock button.primary {
-    background: #1f6feb;
-    border-color: #1f6feb;
-    color: white;
-  }
-  #re-custom-panel .list {
-    max-height: 180px;
-    overflow: auto;
-    display: grid;
-    gap: 6px;
-  }
-  #re-custom-panel .item {
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 8px;
-    background: #f9fafb;
-    line-height: 1.45;
-  }
-  #re-custom-panel .item-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 8px;
-    align-items: flex-start;
-  }
-  #re-custom-panel .delete {
-    color: #b42318;
-    padding: 4px 7px;
-    flex: 0 0 auto;
-  }
-  @media print {
-    #re-custom-panel,
-    #re-action-dock { display: none; }
-  }
-  @media (max-width: 760px) {
-    #re-custom-panel {
-      left: 12px;
-      right: 12px;
-      bottom: 12px;
-      transform: none;
-      width: auto;
-    }
-    #re-action-dock {
-      right: 12px;
-      top: 12px;
-      transform: none;
-      width: auto;
-      grid-template-columns: repeat(3, auto);
-    }
-  }
-</style>
-<div id="re-custom-panel">
-  <details>
-    <summary>내 문구 추가</summary>
-    <div class="body">
-      <textarea id="re-custom-input" placeholder="이 HTML에만 저장할 문구를 입력하세요."></textarea>
-      <div class="actions">
-        <button class="primary" id="re-custom-add" type="button">추가</button>
-        <button id="re-custom-clear" type="button">전체 삭제</button>
-      </div>
-      <div class="list" id="re-custom-list"></div>
-    </div>
-  </details>
-</div>
-<div id="re-action-dock" aria-label="문서 작업">
-  <button class="primary" id="re-copy-doc" type="button">복사</button>
-  <button id="re-print-doc" type="button">인쇄</button>
-  <button id="re-save-doc" type="button">파일 저장</button>
-</div>
 <script>
 (function () {
   const pageId = "06-월세1";
-  const key = "realEstateCustomClauses:" + pageId;
-  const input = document.getElementById("re-custom-input");
-  const list = document.getElementById("re-custom-list");
-  const add = document.getElementById("re-custom-add");
-  const clear = document.getElementById("re-custom-clear");
-  const copyDoc = document.getElementById("re-copy-doc");
-  const printDoc = document.getElementById("re-print-doc");
-  const saveDoc = document.getElementById("re-save-doc");
-
-  function read() {
-    try {
-      const value = JSON.parse(localStorage.getItem(key) || "[]");
-      return Array.isArray(value) ? value : [];
-    } catch (error) {
-      return [];
-    }
-  }
-
-  function write(values) {
-    localStorage.setItem(key, JSON.stringify(values));
-  }
-
-  function render() {
-    const values = read();
-    list.innerHTML = "";
-    if (!values.length) {
-      list.innerHTML = '<div style="color:#6b7280;font-size:13px;">아직 추가한 문구가 없습니다.</div>';
-      return;
-    }
-    values.forEach((value, index) => {
-      const row = document.createElement("div");
-      row.className = "item";
-      row.innerHTML = '<div class="item-row"><div>' + (index + 1) + '. ' + escapeHtml(value) + '</div><button class="delete" type="button">삭제</button></div>';
-      row.querySelector("button").addEventListener("click", () => {
-        const next = read().filter((_, itemIndex) => itemIndex !== index);
-        write(next);
-        render();
-      });
-      list.appendChild(row);
-    });
-  }
-
-  function escapeHtml(value) {
-    return String(value).replace(/[&<>"']/g, char => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;"
-    }[char]));
-  }
-
-  add.addEventListener("click", () => {
-    const value = input.value.trim();
-    if (!value) {
-      alert("추가할 문구를 입력하세요.");
-      return;
-    }
-    const values = read();
-    values.push(value);
-    write(values);
-    input.value = "";
-    render();
-  });
+  const pageTitle = "보성월세1";
+  const sharedKey = "realEstateSelectedClauses";
 
   function selectedOptionText() {
     const values = [];
@@ -525,84 +316,36 @@ function copyText(){
       values.push(input.value || (label ? label.innerText : ""));
     });
     document.querySelectorAll(".selected, .active").forEach((node) => {
-      if (node.closest("#re-custom-panel") || node.closest("#re-action-dock")) return;
       values.push(node.innerText || node.textContent || "");
     });
-    return values.map(value => value.trim()).filter(Boolean);
+    return values
+      .map(value => value.trim())
+      .filter(Boolean)
+      .filter((value, index, all) => all.indexOf(value) === index);
   }
 
-  function primaryResultText() {
-    const selectors = ["textarea#result", "#result", "#out", ".result", ".right"];
-    for (const selector of selectors) {
-      const node = document.querySelector(selector);
-      if (!node || node.closest("#re-custom-panel") || node.closest("#re-action-dock")) continue;
-      const text = "value" in node ? node.value : node.innerText;
-      if (text && text.trim()) return text.trim();
-    }
-    return "";
-  }
-
-  function exportText() {
-    const sections = [];
-    const resultText = primaryResultText();
-    if (resultText) sections.push(resultText);
+  function publishSelection() {
     const selected = selectedOptionText();
-    if (!resultText && selected.length) {
-      sections.push(selected.map((value, index) => `${index + 1}. ${value}`).join("\n"));
+    let stored = {};
+    try {
+      stored = JSON.parse(localStorage.getItem(sharedKey) || "{}");
+    } catch (error) {
+      stored = {};
     }
-    const custom = read();
-    if (custom.length) {
-      sections.push("[내 문구]\n" + custom.map((value, index) => `${index + 1}. ${value}`).join("\n"));
+    if (selected.length) {
+      stored[pageId] = { title: pageTitle, clauses: selected };
+    } else {
+      delete stored[pageId];
     }
-    return sections.join("\n\n").trim();
+    localStorage.setItem(sharedKey, JSON.stringify(stored));
+    try {
+      window.parent.postMessage({ type: "realEstateClausesUpdated", pageId, clauses: selected }, "*");
+    } catch (error) {}
   }
 
-  copyDoc.addEventListener("click", async () => {
-    const text = exportText();
-    if (!text) {
-      alert("복사할 문구가 없습니다.");
-      return;
-    }
-    try {
-      await navigator.clipboard.writeText(text);
-    } catch (error) {
-      const temp = document.createElement("textarea");
-      temp.value = text;
-      document.body.appendChild(temp);
-      temp.select();
-      document.execCommand("copy");
-      temp.remove();
-    }
-    alert("복사 완료");
-  });
-
-  printDoc.addEventListener("click", () => {
-    window.print();
-  });
-
-  saveDoc.addEventListener("click", () => {
-    const text = exportText();
-    if (!text) {
-      alert("저장할 문구가 없습니다.");
-      return;
-    }
-    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = pageId + "-문구.txt";
-    document.body.appendChild(link);
-    link.click();
-    URL.revokeObjectURL(link.href);
-    link.remove();
-  });
-
-  clear.addEventListener("click", () => {
-    if (!confirm("이 HTML에 추가한 문구를 모두 삭제할까요?")) return;
-    write([]);
-    render();
-  });
-
-  render();
+  document.addEventListener("click", () => setTimeout(publishSelection, 0), true);
+  document.addEventListener("change", () => setTimeout(publishSelection, 0), true);
+  publishSelection();
 }());
 </script>
 
